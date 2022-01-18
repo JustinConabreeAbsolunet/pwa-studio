@@ -10,6 +10,7 @@ const SavedPaymentTypes = require('./SavedPaymentTypes');
 const EditablePaymentTypes = require('./EditablePaymentTypes');
 const SummaryPaymentTypes = require('./SummaryPaymentTypes');
 const RootShimmerTypes = require('./RootShimmerTypes');
+const CheckoutPageSteps = require('./CheckoutPageSteps');
 
 module.exports = veniaTargets => {
     const venia = Targetables.using(veniaTargets);
@@ -68,4 +69,36 @@ module.exports = veniaTargets => {
         importPath:
             '@magento/venia-ui/lib/RootComponents/Category/categoryContent.shimmer'
     });
+
+    // TODO Change to real code
+    const checkoutSteps = new CheckoutPageSteps(venia);
+    checkoutSteps.add({
+        key: 'SHIPPING_INFO',
+        importPath:
+            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation'
+    });
+    checkoutSteps.add({
+        key: 'SHIPPING_METHOD',
+        importPath:
+            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation'
+    });
+    checkoutSteps.add({
+        key: 'SHIPPING_TEST',
+        importPath:
+            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation',
+        before: 'SHIPPING_INFO',
+        condition: async (cart, state) => {
+            console.log(cart);
+        }
+    });
+    checkoutSteps.add({
+        key: 'SHIPPING_TEST_TWO',
+        importPath:
+            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation',
+        after: 'SHIPPING_TEST'
+    });
+    checkoutSteps.setCondition('SHIPPING_TEST_TWO', async (cart) => {
+        console.log('test two');
+    });
+    checkoutSteps.setCondition('SHIPPING_TEST', 'null');
 };

@@ -157,7 +157,9 @@ module.exports = targets => {
             'categoryListProductAttributes'
         ]),
 
-        rootShimmerTypes: new targets.types.Sync(['rootShimmerTypes'])
+        rootShimmerTypes: new targets.types.Sync(['rootShimmerTypes']),
+
+        checkoutSteps: new targets.types.Sync(['checkoutSteps'])
     });
 };
 

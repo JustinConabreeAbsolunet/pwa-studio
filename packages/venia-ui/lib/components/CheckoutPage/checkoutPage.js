@@ -31,12 +31,17 @@ import ItemsReview from './ItemsReview';
 import defaultClasses from './checkoutPage.module.css';
 import ScrollAnchor from '../ScrollAnchor/scrollAnchor';
 
+import testStepsImport, { steps as testSteps } from './steps';
+
 const errorIcon = <Icon src={AlertCircleIcon} size={20} />;
 
 const CheckoutPage = props => {
     const { classes: propClasses } = props;
     const { formatMessage } = useIntl();
     const talonProps = useCheckoutPage();
+
+    // TODO refactor checkout to use these steps and conditions
+    console.log('checkout steps', testStepsImport, testSteps);
 
     const {
         /**

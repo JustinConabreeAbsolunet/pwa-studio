@@ -14,6 +14,10 @@ import LinkButton from '../../LinkButton';
 
 const EditModal = React.lazy(() => import('./editModal'));
 
+export const displayCondition = async (cart) => {
+    console.log('display condition shipping info');
+};
+
 const ShippingInformation = props => {
     const {
         classes: propClasses,
