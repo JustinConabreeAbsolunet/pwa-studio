@@ -97,12 +97,6 @@ const ShippingInformation = props => {
         </Fragment>
     ) : (
         <Fragment>
-            <h3 className={classes.editTitle}>
-                <FormattedMessage
-                    id={'shippingInformation.editTitle'}
-                    defaultMessage={'1. Shipping Information'}
-                />
-            </h3>
             <div className={classes.editWrapper}>
                 <AddressForm
                     onSuccess={onSuccess}

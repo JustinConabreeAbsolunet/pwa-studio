@@ -31,7 +31,8 @@ import ItemsReview from './ItemsReview';
 import defaultClasses from './checkoutPage.module.css';
 import ScrollAnchor from '../ScrollAnchor/scrollAnchor';
 
-import testStepsImport, { steps as testSteps } from './steps';
+import availableCheckoutSteps from './steps';
+import CheckoutStepProvider, { useCheckoutStepContext } from './checkoutSteps';
 
 const errorIcon = <Icon src={AlertCircleIcon} size={20} />;
 
@@ -39,9 +40,6 @@ const CheckoutPage = props => {
     const { classes: propClasses } = props;
     const { formatMessage } = useIntl();
     const talonProps = useCheckoutPage();
-
-    // TODO refactor checkout to use these steps and conditions
-    console.log('checkout steps', testStepsImport, testSteps);
 
     const {
         /**
@@ -358,25 +356,36 @@ const CheckoutPage = props => {
                     </h1>
                 </div>
                 {signInContainerElement}
-                <div className={classes.shipping_information_container}>
-                    <ScrollAnchor ref={shippingInformationRef}>
-                        <ShippingInformation
-                            onSave={setShippingInformationDone}
-                            onSuccess={scrollShippingInformationIntoView}
-                            toggleActiveContent={toggleAddressBookContent}
-                            toggleSignInContent={toggleSignInContent}
-                            setGuestSignInUsername={setGuestSignInUsername}
-                        />
-                    </ScrollAnchor>
-                </div>
-                <div className={classes.shipping_method_container}>
-                    <ScrollAnchor ref={shippingMethodRef}>
-                        {shippingMethodSection}
-                    </ScrollAnchor>
-                </div>
-                <div className={classes.payment_information_container}>
-                    {paymentInformationSection}
-                </div>
+                <CheckoutStepProvider>
+                    {Object.entries(availableCheckoutSteps).map(([stepKey, Component]) => {
+                        return (
+                            <Component
+                                key={stepKey}
+                                stepKey={stepKey}
+                                {...talonProps}
+                            />
+                        );
+                    })}
+                </CheckoutStepProvider>
+                {/*<div className={classes.shipping_information_container}>*/}
+                {/*    <ScrollAnchor ref={shippingInformationRef}>*/}
+                {/*        <ShippingInformation*/}
+                {/*            onSave={setShippingInformationDone}*/}
+                {/*            onSuccess={scrollShippingInformationIntoView}*/}
+                {/*            toggleActiveContent={toggleAddressBookContent}*/}
+                {/*            toggleSignInContent={toggleSignInContent}*/}
+                {/*            setGuestSignInUsername={setGuestSignInUsername}*/}
+                {/*        />*/}
+                {/*    </ScrollAnchor>*/}
+                {/*</div>*/}
+                {/*<div className={classes.shipping_method_container}>*/}
+                {/*    <ScrollAnchor ref={shippingMethodRef}>*/}
+                {/*        {shippingMethodSection}*/}
+                {/*    </ScrollAnchor>*/}
+                {/*</div>*/}
+                {/*<div className={classes.payment_information_container}>*/}
+                {/*    {paymentInformationSection}*/}
+                {/*</div>*/}
                 {priceAdjustmentsSection}
                 {reviewOrderButton}
                 {itemsReview}

@@ -12,14 +12,10 @@ class CheckoutPageSteps {
         });
     }
 
-    add({ key, importPath, condition, before, after }) {
+    add({ key, importPath, before, after }) {
         this._steps.add(`import ${key} from '${importPath}'`);
 
         let itemData = `{ key: '${key}'`;
-
-        if (condition) {
-            itemData += `, condition: ${condition.toString()}`;
-        }
 
         if (before) {
             itemData += `, before: '${before}'`;
@@ -34,13 +30,6 @@ class CheckoutPageSteps {
         this._steps.insertAfterSource(
             'const stepData = [];',
             `stepData.push(${itemData});`
-        );
-    }
-
-    setCondition(key, condition) {
-        this._steps.insertAfterSource(
-            `/** Conditions **/`,
-            `setStepCondition('${key}', ${condition.toString()});`
         );
     }
 }

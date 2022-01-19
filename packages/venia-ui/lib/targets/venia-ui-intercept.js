@@ -70,35 +70,27 @@ module.exports = veniaTargets => {
             '@magento/venia-ui/lib/RootComponents/Category/categoryContent.shimmer'
     });
 
-    // TODO Change to real code
+
     const checkoutSteps = new CheckoutPageSteps(venia);
     checkoutSteps.add({
         key: 'SHIPPING_INFO',
         importPath:
-            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation'
+            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformationStep'
     });
     checkoutSteps.add({
         key: 'SHIPPING_METHOD',
         importPath:
-            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation'
+            '@magento/venia-ui/lib/components/CheckoutPage/ShippingMethod/shippingMethodStep'
     });
     checkoutSteps.add({
-        key: 'SHIPPING_TEST',
+        key: 'PAYMENT',
         importPath:
-            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation',
-        before: 'SHIPPING_INFO',
-        condition: async (cart, state) => {
-            console.log(cart);
-        }
+            '@magento/venia-ui/lib/components/CheckoutPage/PaymentInformation/paymentInformationStep'
     });
+
     checkoutSteps.add({
-        key: 'SHIPPING_TEST_TWO',
+        key: 'GIFT_CARD',
         importPath:
-            '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformation',
-        after: 'SHIPPING_TEST'
+            '@magento/venia-ui/lib/components/CheckoutPage/GiftCard/giftCardStep'
     });
-    checkoutSteps.setCondition('SHIPPING_TEST_TWO', async (cart) => {
-        console.log('test two');
-    });
-    checkoutSteps.setCondition('SHIPPING_TEST', 'null');
 };
