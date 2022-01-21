@@ -19,7 +19,7 @@ const PaymentInformation = props => {
         classes: propClasses,
         onSave,
         resetShouldSubmit,
-        setCheckoutStep,
+        resetPaymentStep,
         shouldSubmit,
         checkoutError
     } = props;
@@ -30,7 +30,7 @@ const PaymentInformation = props => {
         onSave,
         checkoutError,
         resetShouldSubmit,
-        setCheckoutStep,
+        resetPaymentStep,
         shouldSubmit
     });
 

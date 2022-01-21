@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext } from 'react';
 import useCheckoutSteps from '@magento/peregrine/lib/talons/CheckoutPage/useCheckoutSteps';
 import { steps } from './steps';
 

@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
+import useShippingMethodStep from '@magento/peregrine/lib/talons/CheckoutPage/ShippingMethod/useShippingMethodStep';
+import ScrollAnchor from '../../ScrollAnchor/scrollAnchor';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import ShippingMethod from './shippingMethod';
-import { FormattedMessage } from 'react-intl';
 
 const ShippingInformationStep = (props) => {
     const {
         isUpdating,
-        setShippingMethodDone,
-        scrollShippingMethodIntoView,
         setIsUpdating,
         stepKey
     } = props;
@@ -16,30 +16,40 @@ const ShippingInformationStep = (props) => {
         loading: stepLoading,
         currentStepKey,
         setStepVisibility,
-        getStepIndex
+        getStepIndex,
+        handleNextStep
     } = useCheckoutStepContext();
 
-    useEffect(() => {
-        setStepVisibility(stepKey, true);
-    }, []);
+    const {
+        handleDone,
+        handleSuccess,
+        shippingMethodRef
+    } = useShippingMethodStep({
+        stepKey,
+        setStepVisibility,
+        handleNextStep
+    });
 
-    const isActive = currentStepKey === stepKey;
-
-    return isActive ? (
+    const shippingMethodContent = currentStepKey === stepKey ? (
         <ShippingMethod
             pageIsUpdating={isUpdating}
-            onSave={setShippingMethodDone}
-            onSuccess={scrollShippingMethodIntoView}
+            onSave={handleDone}
+            onSuccess={handleSuccess}
             setPageIsUpdating={setIsUpdating}
         />
-    ) : (
-        <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-            {stepLoading ? null : getStepIndex(stepKey) + 1}
-            <FormattedMessage
-                id={'checkoutPage.shippingMethodStep'}
-                defaultMessage={'Shipping Method'}
-            />
-        </h3>
+    ) : null;
+
+    return (
+        <ScrollAnchor ref={shippingMethodRef}>
+            <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
+                {stepLoading ? null : getStepIndex(stepKey) + 1}
+                <FormattedMessage
+                    id={'checkoutPage.shippingMethodStep'}
+                    defaultMessage={'Shipping Method'}
+                />
+            </h3>
+            {shippingMethodContent}
+        </ScrollAnchor>
     );
 };
 

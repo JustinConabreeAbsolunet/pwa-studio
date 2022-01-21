@@ -87,10 +87,4 @@ module.exports = veniaTargets => {
         importPath:
             '@magento/venia-ui/lib/components/CheckoutPage/PaymentInformation/paymentInformationStep'
     });
-
-    checkoutSteps.add({
-        key: 'GIFT_CARD',
-        importPath:
-            '@magento/venia-ui/lib/components/CheckoutPage/GiftCard/giftCardStep'
-    });
 };

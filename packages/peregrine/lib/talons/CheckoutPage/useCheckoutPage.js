@@ -65,6 +65,14 @@ export const CHECKOUT_STEP = {
  */
 export const useCheckoutPage = (props = {}) => {
     const operations = mergeOperations(DEFAULT_OPERATIONS, props.operations);
+    const { stepsContext } = props;
+    const {
+        setCheckoutStepKey,
+        currentStepKey,
+        resetStepLoading,
+        getCurrentStepIndex,
+        getStepIndex,
+    } = stepsContext;
 
     const {
         createCartMutation,
@@ -78,15 +86,9 @@ export const useCheckoutPage = (props = {}) => {
         false
     );
 
-    const shippingInformationRef = useRef();
-    const shippingMethodRef = useRef();
-
     const apolloClient = useApolloClient();
     const [isUpdating, setIsUpdating] = useState(false);
     const [activeContent, setActiveContent] = useState('checkout');
-    const [checkoutStep, setCheckoutStep] = useState(
-        CHECKOUT_STEP.SHIPPING_ADDRESS
-    );
     const [guestSignInUsername, setGuestSignInUsername] = useState('');
 
     const [{ isSignedIn }] = useUserContext();
@@ -176,45 +178,6 @@ export const useCheckoutPage = (props = {}) => {
         setReviewOrderButtonClicked(false);
     }, []);
 
-    const scrollShippingInformationIntoView = useCallback(() => {
-        if (shippingInformationRef.current) {
-            shippingInformationRef.current.scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-    }, [shippingInformationRef]);
-
-    const setShippingInformationDone = useCallback(() => {
-        if (checkoutStep === CHECKOUT_STEP.SHIPPING_ADDRESS) {
-            setCheckoutStep(CHECKOUT_STEP.SHIPPING_METHOD);
-        }
-    }, [checkoutStep]);
-
-    const scrollShippingMethodIntoView = useCallback(() => {
-        if (shippingMethodRef.current) {
-            shippingMethodRef.current.scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-    }, [shippingMethodRef]);
-
-    const setShippingMethodDone = useCallback(() => {
-        if (checkoutStep === CHECKOUT_STEP.SHIPPING_METHOD) {
-            setCheckoutStep(CHECKOUT_STEP.PAYMENT);
-        }
-    }, [checkoutStep]);
-
-    const setPaymentInformationDone = useCallback(() => {
-        if (checkoutStep === CHECKOUT_STEP.PAYMENT) {
-            globalThis.scrollTo({
-                left: 0,
-                top: 0,
-                behavior: 'smooth'
-            });
-            setCheckoutStep(CHECKOUT_STEP.REVIEW);
-        }
-    }, [checkoutStep]);
-
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     const handlePlaceOrder = useCallback(async () => {
@@ -258,7 +221,7 @@ export const useCheckoutPage = (props = {}) => {
                     err
                 );
                 setReviewOrderButtonClicked(false);
-                setCheckoutStep(CHECKOUT_STEP.PAYMENT);
+                setCheckoutStepKey('PAYMENT');
             }
         }
 
@@ -277,13 +240,30 @@ export const useCheckoutPage = (props = {}) => {
         isPlacingOrder
     ]);
 
+    useEffect(() => {
+        return () => {
+            resetStepLoading();
+        };
+    }, []);
+
+    const isBeforeReview = useMemo(() => {
+        return getCurrentStepIndex() < getStepIndex('REVIEW');
+    }, [getStepIndex, getCurrentStepIndex]);
+
+    const isPaymentStep = useMemo(() => {
+        return currentStepKey === 'PAYMENT';
+    }, [currentStepKey]);
+
+    const isReviewStep = useMemo(() => {
+        return currentStepKey === 'REVIEW';
+    }, [currentStepKey]);
+
     return {
         activeContent,
         availablePaymentMethods: checkoutData
             ? checkoutData.cart.available_payment_methods
             : null,
         cartItems,
-        checkoutStep,
         customer,
         error: checkoutError,
         guestSignInUsername,
@@ -299,20 +279,15 @@ export const useCheckoutPage = (props = {}) => {
             (placeOrderData && placeOrderData.placeOrder.order.order_number) ||
             null,
         placeOrderLoading,
-        setCheckoutStep,
         setGuestSignInUsername,
         setIsUpdating,
-        setShippingInformationDone,
-        setShippingMethodDone,
-        setPaymentInformationDone,
-        scrollShippingInformationIntoView,
-        shippingInformationRef,
-        shippingMethodRef,
-        scrollShippingMethodIntoView,
         resetReviewOrderButtonClicked,
         handleReviewOrder,
         reviewOrderButtonClicked,
         toggleAddressBookContent,
-        toggleSignInContent
+        toggleSignInContent,
+        isBeforeReview,
+        isReviewStep,
+        isPaymentStep
     };
 };

@@ -5,10 +5,7 @@ import { AlertCircle as AlertCircleIcon } from 'react-feather';
 import { Link } from 'react-router-dom';
 
 import { useWindowSize, useToasts } from '@magento/peregrine';
-import {
-    CHECKOUT_STEP,
-    useCheckoutPage
-} from '@magento/peregrine/lib/talons/CheckoutPage/useCheckoutPage';
+import { useCheckoutPage } from '@magento/peregrine/lib/talons/CheckoutPage/useCheckoutPage';
 
 import { useStyle } from '../../classify';
 import Button from '../Button';
@@ -20,36 +17,28 @@ import FormError from '../FormError';
 import AddressBook from './AddressBook';
 import GuestSignIn from './GuestSignIn';
 import OrderSummary from './OrderSummary';
-import PaymentInformation from './PaymentInformation';
 import payments from './PaymentInformation/paymentMethodCollection';
 import PriceAdjustments from './PriceAdjustments';
-import ShippingMethod from './ShippingMethod';
-import ShippingInformation from './ShippingInformation';
 import OrderConfirmationPage from './OrderConfirmationPage';
 import ItemsReview from './ItemsReview';
 
 import defaultClasses from './checkoutPage.module.css';
-import ScrollAnchor from '../ScrollAnchor/scrollAnchor';
 
 import availableCheckoutSteps from './steps';
-import CheckoutStepProvider, { useCheckoutStepContext } from './checkoutSteps';
+import { useCheckoutStepContext } from './checkoutSteps';
 
 const errorIcon = <Icon src={AlertCircleIcon} size={20} />;
 
 const CheckoutPage = props => {
     const { classes: propClasses } = props;
     const { formatMessage } = useIntl();
-    const talonProps = useCheckoutPage();
+    const stepsContext = useCheckoutStepContext();
+    const talonProps = useCheckoutPage({ stepsContext });
 
     const {
-        /**
-         * Enum, one of:
-         * SHIPPING_ADDRESS, SHIPPING_METHOD, PAYMENT, REVIEW
-         */
         activeContent,
         availablePaymentMethods,
         cartItems,
-        checkoutStep,
         customer,
         error,
         guestSignInUsername,
@@ -63,21 +52,15 @@ const CheckoutPage = props => {
         orderDetailsLoading,
         orderNumber,
         placeOrderLoading,
-        setCheckoutStep,
-        setGuestSignInUsername,
         setIsUpdating,
-        setShippingInformationDone,
         scrollShippingInformationIntoView,
-        setShippingMethodDone,
-        scrollShippingMethodIntoView,
-        setPaymentInformationDone,
-        shippingInformationRef,
-        shippingMethodRef,
-        resetReviewOrderButtonClicked,
         handleReviewOrder,
         reviewOrderButtonClicked,
         toggleAddressBookContent,
-        toggleSignInContent
+        toggleSignInContent,
+        isBeforeReview,
+        isReviewStep,
+        isPaymentStep
     } = talonProps;
 
     const [, { addToast }] = useToasts();
@@ -174,23 +157,6 @@ const CheckoutPage = props => {
             </div>
         ) : null;
 
-        const shippingMethodSection =
-            checkoutStep >= CHECKOUT_STEP.SHIPPING_METHOD ? (
-                <ShippingMethod
-                    pageIsUpdating={isUpdating}
-                    onSave={setShippingMethodDone}
-                    onSuccess={scrollShippingMethodIntoView}
-                    setPageIsUpdating={setIsUpdating}
-                />
-            ) : (
-                <h3 className={classes.shipping_method_heading}>
-                    <FormattedMessage
-                        id={'checkoutPage.shippingMethodStep'}
-                        defaultMessage={'2. Shipping Method'}
-                    />
-                </h3>
-            );
-
         const formErrors = [];
         const paymentMethods = Object.keys(payments);
 
@@ -211,33 +177,15 @@ const CheckoutPage = props => {
             );
         }
 
-        const paymentInformationSection =
-            checkoutStep >= CHECKOUT_STEP.PAYMENT ? (
-                <PaymentInformation
-                    onSave={setPaymentInformationDone}
-                    checkoutError={error}
-                    resetShouldSubmit={resetReviewOrderButtonClicked}
-                    setCheckoutStep={setCheckoutStep}
-                    shouldSubmit={reviewOrderButtonClicked}
-                />
-            ) : (
-                <h3 className={classes.payment_information_heading}>
-                    <FormattedMessage
-                        id={'checkoutPage.paymentInformationStep'}
-                        defaultMessage={'3. Payment Information'}
-                    />
-                </h3>
-            );
-
         const priceAdjustmentsSection =
-            checkoutStep === CHECKOUT_STEP.PAYMENT ? (
+            isPaymentStep ? (
                 <div className={classes.price_adjustments_container}>
                     <PriceAdjustments setPageIsUpdating={setIsUpdating} />
                 </div>
             ) : null;
 
         const reviewOrderButton =
-            checkoutStep === CHECKOUT_STEP.PAYMENT ? (
+            isPaymentStep ? (
                 <Button
                     onClick={handleReviewOrder}
                     priority="high"
@@ -257,14 +205,14 @@ const CheckoutPage = props => {
             ) : null;
 
         const itemsReview =
-            checkoutStep === CHECKOUT_STEP.REVIEW ? (
+            isReviewStep ? (
                 <div className={classes.items_review_container}>
                     <ItemsReview />
                 </div>
             ) : null;
 
         const placeOrderButton =
-            checkoutStep === CHECKOUT_STEP.REVIEW ? (
+            isReviewStep ? (
                 <Button
                     onClick={handlePlaceOrder}
                     priority="high"
@@ -283,7 +231,7 @@ const CheckoutPage = props => {
 
         // If we're on mobile we should only render price summary in/after review.
         const shouldRenderPriceSummary = !(
-            isMobile && checkoutStep < CHECKOUT_STEP.REVIEW
+            isMobile && isBeforeReview
         );
 
         const orderSummary = shouldRenderPriceSummary ? (
@@ -356,17 +304,15 @@ const CheckoutPage = props => {
                     </h1>
                 </div>
                 {signInContainerElement}
-                <CheckoutStepProvider>
-                    {Object.entries(availableCheckoutSteps).map(([stepKey, Component]) => {
-                        return (
-                            <Component
-                                key={stepKey}
-                                stepKey={stepKey}
-                                {...talonProps}
-                            />
-                        );
-                    })}
-                </CheckoutStepProvider>
+                {Object.entries(availableCheckoutSteps).map(([stepKey, Component]) => {
+                    return (
+                        <Component
+                            key={stepKey}
+                            stepKey={stepKey}
+                            {...talonProps}
+                        />
+                    );
+                })}
                 {/*<div className={classes.shipping_information_container}>*/}
                 {/*    <ScrollAnchor ref={shippingInformationRef}>*/}
                 {/*        <ShippingInformation*/}

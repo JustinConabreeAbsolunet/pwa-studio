@@ -4,6 +4,7 @@ import {
     ToastContextProvider,
     WindowSizeContextProvider
 } from '@magento/peregrine';
+import CheckoutStepsProvider from '../CheckoutPage/checkoutSteps';
 import LocaleProvider from './localeProvider';
 
 /**
@@ -15,7 +16,8 @@ const contextProviders = [
     LocaleProvider,
     Peregrine,
     WindowSizeContextProvider,
-    ToastContextProvider
+    ToastContextProvider,
+    CheckoutStepsProvider
 ];
 
 const ContextProvider = ({ children }) => {

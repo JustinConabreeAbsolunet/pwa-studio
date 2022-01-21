@@ -1,12 +1,12 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
+import { FormattedMessage } from 'react-intl';
+import useShippingInformationStep from '@magento/peregrine/lib/talons/CheckoutPage/ShippingInformation/useShippingInformationStep';
+import ScrollAnchor from '../../ScrollAnchor/scrollAnchor';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import ShippingInformation from './shippingInformation';
-import { FormattedMessage } from 'react-intl';
 
 const ShippingInformationStep = (props) => {
     const {
-        setShippingInformationDone,
-        scrollShippingInformationIntoView,
         toggleAddressBookContent,
         toggleSignInContent,
         setGuestSignInUsername,
@@ -17,17 +17,33 @@ const ShippingInformationStep = (props) => {
         loading: stepLoading,
         currentStepKey,
         setStepVisibility,
-        getStepIndex
+        getStepIndex,
+        handleNextStep
     } = useCheckoutStepContext();
 
-    useEffect(() => {
-        setStepVisibility(stepKey, true);
-    }, []);
+    const {
+        handleDone,
+        handleSuccess,
+        shippingInformationRef
+    } = useShippingInformationStep({
+        stepKey,
+        setStepVisibility,
+        handleNextStep
+    });
 
-    const isActive = currentStepKey === stepKey;
+    const shippingInformationContent = currentStepKey === stepKey ? (
+        <ShippingInformation
+            stepKey={stepKey}
+            onSave={handleDone}
+            onSuccess={handleSuccess}
+            toggleActiveContent={toggleAddressBookContent}
+            toggleSignInContent={toggleSignInContent}
+            setGuestSignInUsername={setGuestSignInUsername}
+        />
+    ) : null;
 
-    return isActive ? (
-        <Fragment>
+    return (
+        <ScrollAnchor ref={shippingInformationRef}>
             <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
                 {stepLoading ? null : getStepIndex(stepKey) + 1}
                 <FormattedMessage
@@ -35,22 +51,8 @@ const ShippingInformationStep = (props) => {
                     defaultMessage={'Shipping Information'}
                 />
             </h3>
-            <ShippingInformation
-                onSave={setShippingInformationDone}
-                onSuccess={scrollShippingInformationIntoView}
-                toggleActiveContent={toggleAddressBookContent}
-                toggleSignInContent={toggleSignInContent}
-                setGuestSignInUsername={setGuestSignInUsername}
-            />
-        </Fragment>
-    ) : (
-        <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-            {stepLoading ? null : getStepIndex(stepKey) + 1}
-            <FormattedMessage
-                id={'shippingInformation.editTitle'}
-                defaultMessage={'Shipping Information'}
-            />
-        </h3>
+            {shippingInformationContent}
+        </ScrollAnchor>
     );
 };
 

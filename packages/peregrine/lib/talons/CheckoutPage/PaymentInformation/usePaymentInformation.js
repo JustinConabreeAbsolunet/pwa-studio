@@ -25,7 +25,7 @@ export const usePaymentInformation = props => {
         onSave,
         checkoutError,
         resetShouldSubmit,
-        setCheckoutStep,
+        resetPaymentStep,
         shouldSubmit
     } = props;
 
@@ -133,14 +133,14 @@ export const usePaymentInformation = props => {
             )
         ) {
             resetShouldSubmit();
-            setCheckoutStep(CHECKOUT_STEP.PAYMENT);
+            resetPaymentStep();
             setDoneEditing(false);
         }
     }, [
         availablePaymentMethods,
         resetShouldSubmit,
         selectedPaymentMethod,
-        setCheckoutStep
+        resetPaymentStep
     ]);
 
     // If free is ever available and not selected, automatically select it.
@@ -232,8 +232,8 @@ export const usePaymentInformation = props => {
         setDoneEditing(false);
         clearPaymentDetails({ variables: { cartId } });
         resetShouldSubmit();
-        setCheckoutStep(CHECKOUT_STEP.PAYMENT);
-    }, [resetShouldSubmit, setCheckoutStep, clearPaymentDetails, cartId]);
+        resetPaymentStep();
+    }, [resetShouldSubmit, resetPaymentStep, clearPaymentDetails, cartId]);
 
     useEffect(() => {
         if (

@@ -1,47 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { Fragment } from 'react';
+import { FormattedMessage } from 'react-intl';
+import usePaymentInformationStep from '@magento/peregrine/lib/talons/CheckoutPage/PaymentInformation/usePaymentInformationStep';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import PaymentInformation from './paymentInformation';
-import { FormattedMessage } from 'react-intl';
 
 const ShippingInformationStep = (props) => {
     const {
-        setPaymentInformationDone,
         error,
         resetReviewOrderButtonClicked,
-        setCheckoutStep,
         reviewOrderButtonClicked,
         stepKey
     } = props;
 
+    const stepContext = useCheckoutStepContext();
+    console.log('payment infor step context', stepContext);
     const {
         loading: stepLoading,
         currentStepKey,
         setStepVisibility,
-        getStepIndex
-    } = useCheckoutStepContext();
+        getStepIndex,
+        handleNextStep,
+        setCurrentStepKey
+    } = stepContext;
 
-    useEffect(() => {
-        setStepVisibility(stepKey, true);
-    }, []);
+    console.log('in payment info step', setCurrentStepKey);
 
-    const isActive = currentStepKey === stepKey;
+    const {
+        handleDone,
+        resetPaymentStep
+    } = usePaymentInformationStep({
+        stepKey,
+        setStepVisibility,
+        handleNextStep,
+        setCurrentStepKey
+    });
 
-    return isActive ? (
+    const paymentInformationContent = currentStepKey === stepKey ? (
         <PaymentInformation
-            onSave={setPaymentInformationDone}
+            onSave={handleDone}
             checkoutError={error}
             resetShouldSubmit={resetReviewOrderButtonClicked}
-            setCheckoutStep={setCheckoutStep}
+            resetPaymentStep={resetPaymentStep}
             shouldSubmit={reviewOrderButtonClicked}
         />
-    ) : (
-        <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-            {stepLoading ? null : getStepIndex(stepKey) + 1}
-            <FormattedMessage
-                id={'checkoutPage.paymentInformationStep'}
-                defaultMessage={'Payment Information'}
-            />
-        </h3>
+    ) : null;
+
+    return (
+        <Fragment>
+            <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
+                {stepLoading ? null : getStepIndex(stepKey) + 1}
+                <FormattedMessage
+                    id={'checkoutPage.paymentInformationStep'}
+                    defaultMessage={'Payment Information'}
+                />
+            </h3>
+            {paymentInformationContent}
+        </Fragment>
     );
 };
 
