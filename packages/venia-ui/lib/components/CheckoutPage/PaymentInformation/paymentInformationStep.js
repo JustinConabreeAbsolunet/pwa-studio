@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { FormattedMessage } from 'react-intl';
 import usePaymentInformationStep from '@magento/peregrine/lib/talons/CheckoutPage/PaymentInformation/usePaymentInformationStep';
+import StepCounter from '../StepCounter';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import PaymentInformation from './paymentInformation';
 
@@ -13,17 +14,13 @@ const ShippingInformationStep = (props) => {
     } = props;
 
     const stepContext = useCheckoutStepContext();
-    console.log('payment infor step context', stepContext);
+
     const {
-        loading: stepLoading,
         currentStepKey,
         setStepVisibility,
-        getStepIndex,
         handleNextStep,
         setCurrentStepKey
     } = stepContext;
-
-    console.log('in payment info step', setCurrentStepKey);
 
     const {
         handleDone,
@@ -48,7 +45,7 @@ const ShippingInformationStep = (props) => {
     return (
         <Fragment>
             <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                {stepLoading ? null : getStepIndex(stepKey) + 1}
+                <StepCounter stepKey={stepKey} />
                 <FormattedMessage
                     id={'checkoutPage.paymentInformationStep'}
                     defaultMessage={'Payment Information'}

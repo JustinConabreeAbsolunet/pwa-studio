@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import useShippingMethodStep from '@magento/peregrine/lib/talons/CheckoutPage/ShippingMethod/useShippingMethodStep';
 import ScrollAnchor from '../../ScrollAnchor/scrollAnchor';
+import StepCounter from '../StepCounter';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import ShippingMethod from './shippingMethod';
 
@@ -13,10 +14,8 @@ const ShippingInformationStep = (props) => {
     } = props;
 
     const {
-        loading: stepLoading,
         currentStepKey,
         setStepVisibility,
-        getStepIndex,
         handleNextStep
     } = useCheckoutStepContext();
 
@@ -42,7 +41,7 @@ const ShippingInformationStep = (props) => {
     return (
         <ScrollAnchor ref={shippingMethodRef}>
             <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                {stepLoading ? null : getStepIndex(stepKey) + 1}
+                <StepCounter stepKey={stepKey} />
                 <FormattedMessage
                     id={'checkoutPage.shippingMethodStep'}
                     defaultMessage={'Shipping Method'}

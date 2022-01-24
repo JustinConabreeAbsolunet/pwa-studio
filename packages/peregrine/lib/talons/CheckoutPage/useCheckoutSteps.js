@@ -51,12 +51,16 @@ export default (props) => {
             return false;
         }
 
-        return getStepIndex(currentStepKey);
+        const currentStepIndex = getStepIndex(currentStepKey);
+
+        return currentStepIndex !== -1 ?
+            currentStepIndex :
+            false;
     }, [currentStepKey, getStepIndex]);
 
     const handleNextStep = useCallback(() => {
         const currentIndex = getCurrentStepIndex();
-        if (currentIndex === false || currentIndex === null) {
+        if (currentIndex === false) {
             return false;
         }
 
@@ -97,7 +101,7 @@ export default (props) => {
             setCurrentStepKey(firstStep.key);
         }
     }, [steps]);
-    
+
     return {
         loading,
         currentStepKey,
