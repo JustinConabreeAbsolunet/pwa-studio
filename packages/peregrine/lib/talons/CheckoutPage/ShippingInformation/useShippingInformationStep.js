@@ -1,5 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 
+const HAS_ONLY_VIRTUAL_PRODUCTS = false;
+
 export default (props) => {
     const {
         setStepVisibility,
@@ -7,10 +9,12 @@ export default (props) => {
         stepKey
     } = props;
 
+    const shouldDisplayStep = useRef(true);
     const shippingInformationRef = useRef();
 
     useEffect(() => {
-        setStepVisibility(stepKey, true);
+        shouldDisplayStep.current = !HAS_ONLY_VIRTUAL_PRODUCTS;
+        setStepVisibility(stepKey, !HAS_ONLY_VIRTUAL_PRODUCTS);
     }, [setStepVisibility]);
 
     const handleDone = useCallback(() => {
@@ -28,6 +32,7 @@ export default (props) => {
     return {
         shippingInformationRef,
         handleDone,
-        handleSuccess
+        handleSuccess,
+        shouldDisplay: shouldDisplayStep.current
     };
 }

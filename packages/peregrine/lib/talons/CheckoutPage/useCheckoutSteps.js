@@ -79,6 +79,17 @@ export default (props) => {
         return true;
     }, [steps, getCurrentStepIndex, currentStepKey]);
 
+    const isStepVisited = useCallback((stepKey) => {
+        const currentStep = getCurrentStepIndex();
+        const requestedStep = getStepIndex(stepKey);
+
+        if (currentStep === false || requestedStep === -1) {
+            return false;
+        }
+
+        return requestedStep <= currentStep;
+    }, [getStepIndex, getCurrentStepIndex]);
+
     const resetStepLoading = useCallback(() => {
         setCurrentStepKey(null);
         setLoading(true);
@@ -111,6 +122,7 @@ export default (props) => {
         setStepVisibility,
         setCurrentStepKey,
         handleNextStep,
-        resetStepLoading
+        resetStepLoading,
+        isStepVisited
     };
 }

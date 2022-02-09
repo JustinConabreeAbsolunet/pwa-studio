@@ -24,7 +24,7 @@ import ItemsReview from './ItemsReview';
 
 import defaultClasses from './checkoutPage.module.css';
 
-import availableCheckoutSteps from './steps';
+import availableCheckoutSteps, { steps } from './steps';
 import { useCheckoutStepContext } from './checkoutSteps';
 
 const errorIcon = <Icon src={AlertCircleIcon} size={20} />;
@@ -304,11 +304,17 @@ const CheckoutPage = props => {
                     </h1>
                 </div>
                 {signInContainerElement}
-                {Object.entries(availableCheckoutSteps).map(([stepKey, Component]) => {
+                {steps.map(({ key }) => {
+                    if (typeof availableCheckoutSteps[key] === 'undefined') {
+                        return null;
+                    }
+
+                    const Component = availableCheckoutSteps[key];
+
                     return (
                         <Component
-                            key={stepKey}
-                            stepKey={stepKey}
+                            key={key}
+                            stepKey={key}
                             {...talonProps}
                         />
                     );

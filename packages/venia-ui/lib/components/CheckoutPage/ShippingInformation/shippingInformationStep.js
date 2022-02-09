@@ -15,22 +15,27 @@ const ShippingInformationStep = (props) => {
     } = props;
 
     const {
-        currentStepKey,
         setStepVisibility,
-        handleNextStep
+        handleNextStep,
+        isStepVisited
     } = useCheckoutStepContext();
 
     const {
         handleDone,
         handleSuccess,
-        shippingInformationRef
+        shippingInformationRef,
+        shouldDisplay
     } = useShippingInformationStep({
         stepKey,
         setStepVisibility,
         handleNextStep
     });
 
-    const shippingInformationContent = currentStepKey === stepKey ? (
+    if (!shouldDisplay) {
+        return null;
+    }
+
+    const shippingInformationContent = isStepVisited(stepKey) ? (
         <ShippingInformation
             stepKey={stepKey}
             onSave={handleDone}

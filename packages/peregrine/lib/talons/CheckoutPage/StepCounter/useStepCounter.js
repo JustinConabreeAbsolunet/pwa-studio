@@ -13,7 +13,7 @@ export default (props) => {
         }
 
         const stepIndex = steps
-                .filter((visible) => visible)
+                .filter(({ visible }) => visible)
                 .findIndex(({ key }) => key === stepKey);
 
         return stepIndex !== -1 ?
