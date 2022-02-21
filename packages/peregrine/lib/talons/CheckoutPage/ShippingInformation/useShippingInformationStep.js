@@ -1,24 +1,20 @@
 import { useEffect, useCallback, useRef } from 'react';
 
-const HAS_ONLY_VIRTUAL_PRODUCTS = false;
+const VIRTUAL_TYPES = ['VirtualCartItem'];
 
 export default (props) => {
     const {
         setStepVisibility,
         handleNextStep,
-        stepKey
+        stepKey,
+        cartItems
     } = props;
 
     const shouldDisplayStep = useRef(true);
     const shippingInformationRef = useRef();
 
-    useEffect(() => {
-        shouldDisplayStep.current = !HAS_ONLY_VIRTUAL_PRODUCTS;
-        setStepVisibility(stepKey, !HAS_ONLY_VIRTUAL_PRODUCTS);
-    }, [setStepVisibility]);
-
     const handleDone = useCallback(() => {
-        handleNextStep();
+        handleNextStep(stepKey);
     }, [handleNextStep]);
 
     const handleSuccess = useCallback(() => {
@@ -28,6 +24,12 @@ export default (props) => {
             });
         }
     }, [shippingInformationRef]);
+
+    useEffect(() => {
+        shouldDisplayStep.current = !cartItems.every((cartItem) => {
+            return VIRTUAL_TYPES.includes(cartItem.__typename);
+        });
+    }, [cartItems]);
 
     return {
         shippingInformationRef,

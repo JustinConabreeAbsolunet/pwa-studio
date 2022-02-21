@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import useShippingInformationStep from '@magento/peregrine/lib/talons/CheckoutPage/ShippingInformation/useShippingInformationStep';
 import ScrollAnchor from '../../ScrollAnchor/scrollAnchor';
@@ -11,13 +11,17 @@ const ShippingInformationStep = (props) => {
         toggleAddressBookContent,
         toggleSignInContent,
         setGuestSignInUsername,
-        stepKey
+        stepKey,
+        cartItems
     } = props;
+
+    console.log('props', props);
 
     const {
         setStepVisibility,
         handleNextStep,
-        isStepVisited
+        isStepVisited,
+        loading
     } = useCheckoutStepContext();
 
     const {
@@ -28,8 +32,17 @@ const ShippingInformationStep = (props) => {
     } = useShippingInformationStep({
         stepKey,
         setStepVisibility,
-        handleNextStep
+        handleNextStep,
+        cartItems
     });
+
+    useEffect(() => {
+        setStepVisibility(stepKey, shouldDisplay);
+    }, [shouldDisplay]);
+
+    if (loading) {
+        return null;
+    }
 
     if (!shouldDisplay) {
         return null;

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import usePaymentInformationStep from '@magento/peregrine/lib/talons/CheckoutPage/PaymentInformation/usePaymentInformationStep';
 import StepCounter from '../StepCounter';
@@ -19,18 +19,32 @@ const ShippingInformationStep = (props) => {
         currentStepKey,
         setStepVisibility,
         handleNextStep,
-        setCurrentStepKey
+        setCurrentStepKey,
+        loading
     } = stepContext;
 
     const {
         handleDone,
-        resetPaymentStep
+        resetPaymentStep,
+        shouldDisplay
     } = usePaymentInformationStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
         setCurrentStepKey
     });
+
+    useEffect(() => {
+        setStepVisibility(stepKey, shouldDisplay);
+    }, [shouldDisplay]);
+
+    if (loading) {
+        return null;
+    }
+
+    if (!shouldDisplay) {
+        return null;
+    }
 
     const paymentInformationContent = currentStepKey === stepKey ? (
         <PaymentInformation

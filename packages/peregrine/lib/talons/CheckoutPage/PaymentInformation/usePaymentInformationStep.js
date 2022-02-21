@@ -18,7 +18,7 @@ export default (props) => {
             top: 0,
             behavior: 'smooth'
         });
-        handleNextStep();
+        handleNextStep(stepKey);
     }, [handleNextStep]);
 
     const resetPaymentStep = useCallback(() => {
@@ -27,6 +27,7 @@ export default (props) => {
 
     return {
         handleDone,
-        resetPaymentStep
+        resetPaymentStep,
+        shouldDisplay: true
     };
 }

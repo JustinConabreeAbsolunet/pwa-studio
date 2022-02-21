@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import useShippingMethodStep from '@magento/peregrine/lib/talons/CheckoutPage/ShippingMethod/useShippingMethodStep';
 import ScrollAnchor from '../../ScrollAnchor/scrollAnchor';
@@ -10,24 +10,40 @@ const ShippingInformationStep = (props) => {
     const {
         isUpdating,
         setIsUpdating,
-        stepKey
+        stepKey,
+        cartItems
     } = props;
 
     const {
         setStepVisibility,
         handleNextStep,
-        isStepVisited
+        isStepVisited,
+        loading
     } = useCheckoutStepContext();
 
     const {
         handleDone,
         handleSuccess,
-        shippingMethodRef
+        shippingMethodRef,
+        shouldDisplay
     } = useShippingMethodStep({
         stepKey,
         setStepVisibility,
-        handleNextStep
+        handleNextStep,
+        cartItems
     });
+
+    useEffect(() => {
+        setStepVisibility(stepKey, shouldDisplay);
+    }, [shouldDisplay]);
+
+    if (loading) {
+        return null;
+    }
+
+    if (!shouldDisplay) {
+        return null;
+    }
 
     const shippingMethodContent = isStepVisited(stepKey) ? (
         <ShippingMethod

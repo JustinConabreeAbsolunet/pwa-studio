@@ -1,20 +1,19 @@
 import { useEffect, useCallback, useRef } from 'react';
 
+const VIRTUAL_TYPES = ['VirtualCartItem'];
+
 export default (props) => {
     const {
-        setStepVisibility,
         handleNextStep,
-        stepKey
+        stepKey,
+        cartItems
     } = props;
 
     const shippingMethodRef = useRef();
-
-    useEffect(() => {
-        setStepVisibility(stepKey, true);
-    }, [setStepVisibility]);
+    const shouldDisplayStep = useRef(true);
 
     const handleDone = useCallback(() => {
-        handleNextStep();
+        handleNextStep(stepKey);
     }, [handleNextStep]);
 
     const handleSuccess = useCallback(() => {
@@ -25,9 +24,16 @@ export default (props) => {
         }
     }, [shippingMethodRef]);
 
+    useEffect(() => {
+        shouldDisplayStep.current = !cartItems.every((cartItem) => {
+            return VIRTUAL_TYPES.includes(cartItem.__typename);
+        });
+    }, [cartItems]);
+
     return {
         shippingMethodRef,
         handleDone,
-        handleSuccess
+        handleSuccess,
+        shouldDisplay: shouldDisplayStep.current
     };
 }

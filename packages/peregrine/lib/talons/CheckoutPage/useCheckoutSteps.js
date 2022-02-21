@@ -58,7 +58,11 @@ export default (props) => {
             false;
     }, [currentStepKey, getStepIndex]);
 
-    const handleNextStep = useCallback(() => {
+    const handleNextStep = useCallback((requesterKey) => {
+        if (requesterKey !== currentStepKey) {
+            return false;
+        }
+
         const currentIndex = getCurrentStepIndex();
         if (currentIndex === false) {
             return false;
