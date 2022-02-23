@@ -11,13 +11,16 @@ const ShippingInformationStep = (props) => {
         isUpdating,
         setIsUpdating,
         stepKey,
-        cartItems
+        cartItems,
+        classes
     } = props;
 
     const {
         setStepVisibility,
         handleNextStep,
         isStepVisited,
+        isStepPassed,
+        getContinueText,
         loading
     } = useCheckoutStepContext();
 
@@ -25,12 +28,15 @@ const ShippingInformationStep = (props) => {
         handleDone,
         handleSuccess,
         shippingMethodRef,
-        shouldDisplay
+        shouldDisplay,
+        continueText
     } = useShippingMethodStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
-        cartItems
+        cartItems,
+        getContinueText,
+        loading
     });
 
     useEffect(() => {
@@ -45,26 +51,33 @@ const ShippingInformationStep = (props) => {
         return null;
     }
 
+    const shippingMethodHeader = !isStepPassed(stepKey) ? (
+        <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
+            <StepCounter stepKey={stepKey} />
+            <FormattedMessage
+                id={'checkoutPage.shippingMethodStep'}
+                defaultMessage={'Shipping Method'}
+            />
+        </h3>
+    ) : null;
+
     const shippingMethodContent = isStepVisited(stepKey) ? (
         <ShippingMethod
             pageIsUpdating={isUpdating}
             onSave={handleDone}
             onSuccess={handleSuccess}
             setPageIsUpdating={setIsUpdating}
+            continueText={continueText}
         />
     ) : null;
 
     return (
-        <ScrollAnchor ref={shippingMethodRef}>
-            <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                <StepCounter stepKey={stepKey} />
-                <FormattedMessage
-                    id={'checkoutPage.shippingMethodStep'}
-                    defaultMessage={'Shipping Method'}
-                />
-            </h3>
-            {shippingMethodContent}
-        </ScrollAnchor>
+        <div className={classes.shipping_method_container}>
+            <ScrollAnchor ref={shippingMethodRef}>
+                {shippingMethodHeader}
+                {shippingMethodContent}
+            </ScrollAnchor>
+        </div>
     );
 };
 

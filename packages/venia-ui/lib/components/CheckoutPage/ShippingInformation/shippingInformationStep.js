@@ -12,15 +12,16 @@ const ShippingInformationStep = (props) => {
         toggleSignInContent,
         setGuestSignInUsername,
         stepKey,
-        cartItems
+        cartItems,
+        classes
     } = props;
-
-    console.log('props', props);
 
     const {
         setStepVisibility,
         handleNextStep,
         isStepVisited,
+        isStepPassed,
+        getContinueText,
         loading
     } = useCheckoutStepContext();
 
@@ -28,12 +29,15 @@ const ShippingInformationStep = (props) => {
         handleDone,
         handleSuccess,
         shippingInformationRef,
-        shouldDisplay
+        shouldDisplay,
+        continueText
     } = useShippingInformationStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
-        cartItems
+        cartItems,
+        getContinueText,
+        loading
     });
 
     useEffect(() => {
@@ -48,6 +52,16 @@ const ShippingInformationStep = (props) => {
         return null;
     }
 
+    const shippingInformationHeader = !isStepPassed(stepKey) ? (
+        <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
+            <StepCounter stepKey={stepKey} />
+            <FormattedMessage
+                id={'shippingInformation.editTitle'}
+                defaultMessage={'Shipping Information'}
+            />
+        </h3>
+    ) : null;
+
     const shippingInformationContent = isStepVisited(stepKey) ? (
         <ShippingInformation
             stepKey={stepKey}
@@ -56,20 +70,17 @@ const ShippingInformationStep = (props) => {
             toggleActiveContent={toggleAddressBookContent}
             toggleSignInContent={toggleSignInContent}
             setGuestSignInUsername={setGuestSignInUsername}
+            continueText={continueText}
         />
     ) : null;
 
     return (
-        <ScrollAnchor ref={shippingInformationRef}>
-            <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                <StepCounter stepKey={stepKey} />
-                <FormattedMessage
-                    id={'shippingInformation.editTitle'}
-                    defaultMessage={'Shipping Information'}
-                />
-            </h3>
-            {shippingInformationContent}
-        </ScrollAnchor>
+        <div className={classes.shipping_information_container}>
+            <ScrollAnchor ref={shippingInformationRef}>
+                {shippingInformationHeader}
+                {shippingInformationContent}
+            </ScrollAnchor>
+        </div>
     );
 };
 

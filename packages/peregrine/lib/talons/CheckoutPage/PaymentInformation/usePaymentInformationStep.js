@@ -1,16 +1,21 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 
 export default (props) => {
     const {
-        setStepVisibility,
+        getContinueText,
         handleNextStep,
         stepKey,
-        setCurrentStepKey
+        setCurrentStepKey,
+        loading
     } = props;
 
-    useEffect(() => {
-        setStepVisibility(stepKey, true);
-    }, [setStepVisibility]);
+    const continueText = useMemo(() => {
+        if (loading) {
+            return null;
+        }
+
+        return getContinueText(stepKey);
+    }, [getContinueText]);
 
     const handleDone = useCallback(() => {
         globalThis.scrollTo({
@@ -28,6 +33,7 @@ export default (props) => {
     return {
         handleDone,
         resetPaymentStep,
+        continueText,
         shouldDisplay: true
     };
 }

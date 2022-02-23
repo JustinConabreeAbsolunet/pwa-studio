@@ -315,6 +315,7 @@ const CheckoutPage = props => {
                         <Component
                             key={key}
                             stepKey={key}
+                            classes={classes}
                             {...talonProps}
                         />
                     );

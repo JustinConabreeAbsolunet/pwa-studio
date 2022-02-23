@@ -27,7 +27,13 @@ const initializingContents = (
 );
 
 const ShippingMethod = props => {
-    const { onSave, onSuccess, pageIsUpdating, setPageIsUpdating } = props;
+    const {
+        onSave,
+        onSuccess,
+        pageIsUpdating,
+        setPageIsUpdating,
+        continueText
+    } = props;
 
     const talonProps = useShippingMethod({
         onSave,
@@ -105,12 +111,7 @@ const ShippingMethod = props => {
                             type="submit"
                             disabled={pageIsUpdating || isLoading}
                         >
-                            <FormattedMessage
-                                id={'shippingMethod.continueToNextStep'}
-                                defaultMessage={
-                                    'Continue to Payment Information'
-                                }
-                            />
+                            {continueText}
                         </Button>
                     </div>
                 </Form>

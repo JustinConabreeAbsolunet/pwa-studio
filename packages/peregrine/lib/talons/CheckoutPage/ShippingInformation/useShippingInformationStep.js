@@ -1,17 +1,26 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useMemo } from 'react';
 
 const VIRTUAL_TYPES = ['VirtualCartItem'];
 
 export default (props) => {
     const {
-        setStepVisibility,
+        getContinueText,
         handleNextStep,
         stepKey,
-        cartItems
+        cartItems,
+        loading
     } = props;
 
     const shouldDisplayStep = useRef(true);
     const shippingInformationRef = useRef();
+
+    const continueText = useMemo(() => {
+        if (loading) {
+            return null;
+        }
+
+        return getContinueText(stepKey);
+    }, [getContinueText, loading]);
 
     const handleDone = useCallback(() => {
         handleNextStep(stepKey);
@@ -35,6 +44,7 @@ export default (props) => {
         shippingInformationRef,
         handleDone,
         handleSuccess,
+        continueText,
         shouldDisplay: shouldDisplayStep.current
     };
 }

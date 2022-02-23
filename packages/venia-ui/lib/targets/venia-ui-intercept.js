@@ -74,16 +74,28 @@ module.exports = veniaTargets => {
     const checkoutSteps = new CheckoutPageSteps(venia);
     checkoutSteps.add({
         key: 'SHIPPING_INFO',
+        stepTitle: {
+            id: 'checkoutPage.shippingInfoCta',
+            defaultMessage: 'Continue to Shipping Information'
+        },
         importPath:
             '@magento/venia-ui/lib/components/CheckoutPage/ShippingInformation/shippingInformationStep'
     });
     checkoutSteps.add({
         key: 'SHIPPING_METHOD',
+        stepTitle: {
+            id: 'checkoutPage.shippingMethodCta',
+            defaultMessage: 'Continue to Shipping Method'
+        },
         importPath:
             '@magento/venia-ui/lib/components/CheckoutPage/ShippingMethod/shippingMethodStep'
     });
     checkoutSteps.add({
         key: 'PAYMENT',
+        stepTitle: {
+            id: 'checkoutPage.paymentInfoCta',
+            defaultMessage: 'Continue to Payment Information'
+        },
         importPath:
             '@magento/venia-ui/lib/components/CheckoutPage/PaymentInformation/paymentInformationStep'
     });

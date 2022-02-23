@@ -28,7 +28,8 @@ const GuestForm = props => {
         onSuccess,
         shippingData,
         toggleSignInContent,
-        setGuestSignInUsername
+        setGuestSignInUsername,
+        continueText
     } = props;
 
     const talonProps = useGuestForm({
@@ -86,10 +87,7 @@ const GuestForm = props => {
               id: 'global.updateButton',
               defaultMessage: 'Update'
           })
-        : formatMessage({
-              id: 'guestForm.continueToNextStep',
-              defaultMessage: 'Continue to Shipping Method'
-          });
+        : continueText;
     const submitButtonProps = {
         disabled: isSaving,
         priority: isUpdate ? 'high' : 'normal',

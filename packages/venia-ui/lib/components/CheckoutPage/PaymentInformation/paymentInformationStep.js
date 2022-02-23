@@ -10,7 +10,8 @@ const ShippingInformationStep = (props) => {
         error,
         resetReviewOrderButtonClicked,
         reviewOrderButtonClicked,
-        stepKey
+        stepKey,
+        classes
     } = props;
 
     const stepContext = useCheckoutStepContext();
@@ -20,18 +21,22 @@ const ShippingInformationStep = (props) => {
         setStepVisibility,
         handleNextStep,
         setCurrentStepKey,
+        getContinueText,
         loading
     } = stepContext;
 
     const {
         handleDone,
         resetPaymentStep,
-        shouldDisplay
+        shouldDisplay,
+        continueText
     } = usePaymentInformationStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
-        setCurrentStepKey
+        setCurrentStepKey,
+        getContinueText,
+        loading
     });
 
     useEffect(() => {
@@ -46,6 +51,16 @@ const ShippingInformationStep = (props) => {
         return null;
     }
 
+    const paymentInformationHeader = currentStepKey !== stepKey ? (
+        <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
+            <StepCounter stepKey={stepKey} />
+            <FormattedMessage
+                id={'checkoutPage.paymentInformationStep'}
+                defaultMessage={'Payment Information'}
+            />
+        </h3>
+    ) : null;
+
     const paymentInformationContent = currentStepKey === stepKey ? (
         <PaymentInformation
             onSave={handleDone}
@@ -53,20 +68,15 @@ const ShippingInformationStep = (props) => {
             resetShouldSubmit={resetReviewOrderButtonClicked}
             resetPaymentStep={resetPaymentStep}
             shouldSubmit={reviewOrderButtonClicked}
+            continueText={continueText}
         />
     ) : null;
 
     return (
-        <Fragment>
-            <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                <StepCounter stepKey={stepKey} />
-                <FormattedMessage
-                    id={'checkoutPage.paymentInformationStep'}
-                    defaultMessage={'Payment Information'}
-                />
-            </h3>
+        <div className={classes.payment_information_container}>
+            {paymentInformationHeader}
             {paymentInformationContent}
-        </Fragment>
+        </div>
     );
 };
 

@@ -25,7 +25,8 @@ const ShippingInformation = props => {
         onSuccess,
         toggleActiveContent,
         toggleSignInContent,
-        setGuestSignInUsername
+        setGuestSignInUsername,
+        continueText
     } = props;
     const talonProps = useShippingInformation({
         onSave,
@@ -103,6 +104,7 @@ const ShippingInformation = props => {
                     shippingData={shippingData}
                     toggleSignInContent={toggleSignInContent}
                     setGuestSignInUsername={setGuestSignInUsername}
+                    continueText={continueText}
                 />
             </div>
         </Fragment>

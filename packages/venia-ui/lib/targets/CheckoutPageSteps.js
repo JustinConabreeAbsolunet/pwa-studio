@@ -12,24 +12,25 @@ class CheckoutPageSteps {
         });
     }
 
-    add({ key, importPath, before, after }) {
+    add({ key, importPath, stepTitle, before, after }) {
         this._steps.add(`import ${key} from '${importPath}'`);
 
-        let itemData = `{ key: '${key}'`;
+        const itemData = {
+            key,
+            stepTitle
+        };
 
         if (before) {
-            itemData += `, before: '${before}'`;
+            itemData.before = before;
         }
 
         if (after) {
-            itemData += `, after: '${after}'`;
+            itemData.after = after;
         }
-
-        itemData += `}`;
 
         this._steps.insertAfterSource(
             'const stepData = [];',
-            `stepData.push(${itemData});`
+            `stepData.push(${JSON.stringify(itemData)});`
         );
     }
 }

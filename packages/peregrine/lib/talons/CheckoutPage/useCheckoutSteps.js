@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 
 const REVIEW_STEP_KEY = 'REVIEW';
 
@@ -9,10 +10,12 @@ export default (props) => {
 
     const [currentStepKey, setCurrentStepKey] = useState();
     const [loading, setLoading] = useState(true);
+    const { formatMessage } = useIntl();
 
     const [steps, setStepData] = useState(() => {
-        return allSteps.map(({ key }) => ({
+        return allSteps.map(({ key, stepTitle }) => ({
             key,
+            stepTitle,
             finished: false,
             visible: false
         }));
@@ -94,6 +97,17 @@ export default (props) => {
         return requestedStep <= currentStep;
     }, [getStepIndex, getCurrentStepIndex]);
 
+    const isStepPassed = useCallback((stepKey) => {
+        const currentStep = getCurrentStepIndex();
+        const requestedStep = getStepIndex(stepKey);
+
+        if (currentStep === false || requestedStep === -1) {
+            return false;
+        }
+
+        return requestedStep < currentStep;
+    }, [getStepIndex, getCurrentStepIndex]);
+
     const resetStepLoading = useCallback(() => {
         setCurrentStepKey(null);
         setLoading(true);
@@ -105,6 +119,23 @@ export default (props) => {
             }));
         });
     }, []);
+
+    const getContinueText = useCallback((stepKey) => {
+        const nextStepIndex = getStepIndex(stepKey) + 1;
+        const availableSteps = steps.filter(({ visible }) => visible);
+        const reviewStepIndex = availableSteps.length;
+
+        if (nextStepIndex === reviewStepIndex) {
+            return formatMessage({
+                id: 'checkoutPage.reviewCta',
+                defaultMessage: 'Review Order'
+            });
+        }
+
+        const stepTitleInfo = availableSteps[nextStepIndex].stepTitle
+
+        return formatMessage(stepTitleInfo);
+    }, [getStepIndex, steps, formatMessage]);
 
 
     useEffect(() => {
@@ -127,6 +158,8 @@ export default (props) => {
         setCurrentStepKey,
         handleNextStep,
         resetStepLoading,
-        isStepVisited
+        isStepVisited,
+        isStepPassed,
+        getContinueText
     };
 }
