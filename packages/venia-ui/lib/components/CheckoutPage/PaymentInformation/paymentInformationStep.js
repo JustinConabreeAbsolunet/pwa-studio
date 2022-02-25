@@ -5,7 +5,7 @@ import StepCounter from '../StepCounter';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import PaymentInformation from './paymentInformation';
 
-const ShippingInformationStep = (props) => {
+const PaymentInformationStep = (props) => {
     const {
         error,
         resetReviewOrderButtonClicked,
@@ -22,21 +22,31 @@ const ShippingInformationStep = (props) => {
         handleNextStep,
         setCurrentStepKey,
         getContinueText,
-        loading
+        loading,
+        isOnLastStep,
+        isStepVisited
     } = stepContext;
 
     const {
         handleDone,
         resetPaymentStep,
         shouldDisplay,
-        continueText
+        continueText,
+        shouldSubmitPayment,
+        resetShouldSubmitPayment,
+        handleContinueClick,
+        shouldDisplayContinueButton
     } = usePaymentInformationStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
         setCurrentStepKey,
         getContinueText,
-        loading
+        loading,
+        currentStepKey,
+        isOnLastStep,
+        reviewOrderButtonClicked,
+        resetReviewOrderButtonClicked
     });
 
     useEffect(() => {
@@ -51,7 +61,7 @@ const ShippingInformationStep = (props) => {
         return null;
     }
 
-    const paymentInformationHeader = currentStepKey !== stepKey ? (
+    const paymentInformationHeader = !isStepVisited(stepKey) ? (
         <h3 style={{ fontWeight: 600, textTransform: 'uppercase' }}>
             <StepCounter stepKey={stepKey} />
             <FormattedMessage
@@ -61,14 +71,16 @@ const ShippingInformationStep = (props) => {
         </h3>
     ) : null;
 
-    const paymentInformationContent = currentStepKey === stepKey ? (
+    const paymentInformationContent = isStepVisited(stepKey) ? (
         <PaymentInformation
             onSave={handleDone}
             checkoutError={error}
-            resetShouldSubmit={resetReviewOrderButtonClicked}
+            resetShouldSubmitPayment={resetShouldSubmitPayment}
             resetPaymentStep={resetPaymentStep}
-            shouldSubmit={reviewOrderButtonClicked}
+            shouldSubmitPayment={shouldSubmitPayment}
             continueText={continueText}
+            onContinueClick={handleContinueClick}
+            shouldDisplayContinueButton={shouldDisplayContinueButton}
         />
     ) : null;
 
@@ -80,4 +92,4 @@ const ShippingInformationStep = (props) => {
     );
 };
 
-export default ShippingInformationStep;
+export default PaymentInformationStep;

@@ -6,7 +6,7 @@ import StepCounter from '../StepCounter';
 import { useCheckoutStepContext } from '../checkoutSteps';
 import ShippingMethod from './shippingMethod';
 
-const ShippingInformationStep = (props) => {
+const ShippingMethodStep = (props) => {
     const {
         isUpdating,
         setIsUpdating,
@@ -81,4 +81,4 @@ const ShippingInformationStep = (props) => {
     );
 };
 
-export default ShippingInformationStep;
+export default ShippingMethodStep;

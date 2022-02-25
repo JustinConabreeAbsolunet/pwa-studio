@@ -60,7 +60,7 @@ const CheckoutPage = props => {
         toggleSignInContent,
         isBeforeReview,
         isReviewStep,
-        isPaymentStep
+        isOnLastStep
     } = talonProps;
 
     const [, { addToast }] = useToasts();
@@ -178,14 +178,14 @@ const CheckoutPage = props => {
         }
 
         const priceAdjustmentsSection =
-            isPaymentStep ? (
+            isOnLastStep ? (
                 <div className={classes.price_adjustments_container}>
                     <PriceAdjustments setPageIsUpdating={setIsUpdating} />
                 </div>
             ) : null;
 
         const reviewOrderButton =
-            isPaymentStep ? (
+            isOnLastStep ? (
                 <Button
                     onClick={handleReviewOrder}
                     priority="high"

@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 
 export default (props) => {
     const {
@@ -6,8 +6,14 @@ export default (props) => {
         handleNextStep,
         stepKey,
         setCurrentStepKey,
-        loading
+        loading,
+        currentStepKey,
+        isOnLastStep,
+        reviewOrderButtonClicked,
+        resetReviewOrderButtonClicked
     } = props;
+
+    const [shouldSubmitPayment, setShouldSubmitPayment] = useState(reviewOrderButtonClicked);
 
     const continueText = useMemo(() => {
         if (loading) {
@@ -15,7 +21,15 @@ export default (props) => {
         }
 
         return getContinueText(stepKey);
-    }, [getContinueText]);
+    }, [loading, getContinueText]);
+
+    const shouldDisplayContinueButton = useMemo(() => {
+        return continueText !== null && currentStepKey === stepKey;
+    }, [continueText, currentStepKey])
+
+    const handleContinueClick = useCallback(() => {
+        setShouldSubmitPayment(true);
+    }, []);
 
     const handleDone = useCallback(() => {
         globalThis.scrollTo({
@@ -26,14 +40,37 @@ export default (props) => {
         handleNextStep(stepKey);
     }, [handleNextStep]);
 
+    const resetShouldSubmitPayment = useCallback(() => {
+        if (currentStepKey !== stepKey) {
+            return;
+        }
+
+        if (isOnLastStep) {
+            resetReviewOrderButtonClicked();
+
+            return;
+        }
+
+        setShouldSubmitPayment(false);
+    }, [currentStepKey, resetReviewOrderButtonClicked]);
+
     const resetPaymentStep = useCallback(() => {
         setCurrentStepKey('PAYMENT');
     }, [setCurrentStepKey]);
+
+    useEffect(() => {
+        console.log('should submit changed', reviewOrderButtonClicked);
+        setShouldSubmitPayment(reviewOrderButtonClicked);
+    }, [reviewOrderButtonClicked]);
 
     return {
         handleDone,
         resetPaymentStep,
         continueText,
+        shouldSubmitPayment,
+        resetShouldSubmitPayment,
+        handleContinueClick,
+        shouldDisplayContinueButton,
         shouldDisplay: true
     };
 }

@@ -72,6 +72,7 @@ export const useCheckoutPage = (props = {}) => {
         resetStepLoading,
         getCurrentStepIndex,
         getStepIndex,
+        isOnLastStep
     } = stepsContext;
 
     const {
@@ -288,6 +289,7 @@ export const useCheckoutPage = (props = {}) => {
         toggleSignInContent,
         isBeforeReview,
         isReviewStep,
-        isPaymentStep
+        isPaymentStep,
+        isOnLastStep
     };
 };

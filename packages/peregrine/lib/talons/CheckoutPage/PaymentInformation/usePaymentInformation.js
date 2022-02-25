@@ -11,8 +11,8 @@ import { CHECKOUT_STEP } from '../useCheckoutPage';
  *
  * @param {Function} props.onSave callback to be called when user clicks review order button
  * @param {Object} props.checkoutError an instance of the `CheckoutError` error that has been generated using the error from the place order mutation
- * @param {Boolean} props.shouldSubmit property telling us to proceed to next step
- * @param {Function} props.resetShouldSubmit callback to reset the review order button flag
+ * @param {Boolean} props.shouldSubmitPayment property telling us to proceed to next step
+ * @param {Function} props.resetShouldSubmitPayment callback to reset the review order button flag
  * @param {DocumentNode} props.operations.getPaymentNonceQuery query to fetch and/or clear payment nonce from cache
  * @param {DocumentNode} props.operations.getPaymentInformationQuery query to fetch data to render this component
  * @param {DocumentNode} props.operations.setBillingAddressMutation mutation to set billing address on Cart
@@ -24,9 +24,9 @@ export const usePaymentInformation = props => {
     const {
         onSave,
         checkoutError,
-        resetShouldSubmit,
+        resetShouldSubmitPayment,
         resetPaymentStep,
-        shouldSubmit
+        shouldSubmitPayment
     } = props;
 
     const operations = mergeOperations(DEFAULT_OPERATIONS, props.operations);
@@ -65,9 +65,9 @@ export const usePaymentInformation = props => {
     }, [onSave]);
 
     const handlePaymentError = useCallback(() => {
-        resetShouldSubmit();
+        resetShouldSubmitPayment();
         setDoneEditing(false);
-    }, [resetShouldSubmit]);
+    }, [resetShouldSubmitPayment]);
 
     /**
      * Queries
@@ -132,13 +132,13 @@ export const usePaymentInformation = props => {
                 ({ code }) => code === selectedPaymentMethod
             )
         ) {
-            resetShouldSubmit();
+            resetShouldSubmitPayment();
             resetPaymentStep();
             setDoneEditing(false);
         }
     }, [
         availablePaymentMethods,
-        resetShouldSubmit,
+        resetShouldSubmitPayment,
         selectedPaymentMethod,
         resetPaymentStep
     ]);
@@ -220,7 +220,7 @@ export const usePaymentInformation = props => {
     // and free is still available, proceed.
     useEffect(() => {
         if (
-            shouldSubmit &&
+            shouldSubmitPayment &&
             availablePaymentMethods.find(({ code }) => code === 'free') &&
             selectedPaymentMethod === 'free'
         ) {
@@ -231,9 +231,9 @@ export const usePaymentInformation = props => {
     const handleExpiredPaymentError = useCallback(() => {
         setDoneEditing(false);
         clearPaymentDetails({ variables: { cartId } });
-        resetShouldSubmit();
+        resetShouldSubmitPayment();
         resetPaymentStep();
-    }, [resetShouldSubmit, resetPaymentStep, clearPaymentDetails, cartId]);
+    }, [resetShouldSubmitPayment, resetPaymentStep, clearPaymentDetails, cartId]);
 
     useEffect(() => {
         if (

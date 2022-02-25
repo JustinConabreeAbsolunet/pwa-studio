@@ -9,6 +9,7 @@ import CheckoutError from '@magento/peregrine/lib/talons/CheckoutPage/CheckoutEr
 import { useStyle } from '../../../classify';
 import defaultClasses from './paymentInformation.module.css';
 import LoadingIndicator from '../../LoadingIndicator';
+import Button from '../../Button';
 
 const PaymentMethods = React.lazy(() => import('./paymentMethods'));
 const EditModal = React.lazy(() => import('./editModal'));
@@ -18,10 +19,13 @@ const PaymentInformation = props => {
     const {
         classes: propClasses,
         onSave,
-        resetShouldSubmit,
+        resetShouldSubmitPayment,
         resetPaymentStep,
-        shouldSubmit,
-        checkoutError
+        shouldSubmitPayment,
+        checkoutError,
+        continueText,
+        onContinueClick,
+        shouldDisplayContinueButton
     } = props;
 
     const classes = useStyle(defaultClasses, propClasses);
@@ -29,9 +33,9 @@ const PaymentInformation = props => {
     const talonProps = usePaymentInformation({
         onSave,
         checkoutError,
-        resetShouldSubmit,
+        resetShouldSubmitPayment,
         resetPaymentStep,
-        shouldSubmit
+        shouldSubmitPayment
     });
 
     const {
@@ -62,8 +66,8 @@ const PaymentInformation = props => {
             <PaymentMethods
                 onPaymentError={handlePaymentError}
                 onPaymentSuccess={handlePaymentSuccess}
-                resetShouldSubmit={resetShouldSubmit}
-                shouldSubmit={shouldSubmit}
+                resetShouldSubmit={resetShouldSubmitPayment}
+                shouldSubmit={shouldSubmitPayment}
             />
         </Form>
     );
@@ -74,12 +78,21 @@ const PaymentInformation = props => {
         </Suspense>
     ) : null;
 
+    const continueButton = shouldDisplayContinueButton ? (
+        <Button
+            priority="high"
+            onClick={onContinueClick}
+            disabled={shouldSubmitPayment}
+            >{continueText}</Button>
+    ) : null;
+
     return (
         <div className={classes.root} data-cy="PaymentInformation-root">
             <div className={classes.payment_info_container}>
                 <Suspense fallback={null}>{paymentInformation}</Suspense>
             </div>
             {editModal}
+            {continueButton}
         </div>
     );
 };
@@ -94,6 +107,6 @@ PaymentInformation.propTypes = {
     }),
     onSave: func.isRequired,
     checkoutError: instanceOf(CheckoutError),
-    resetShouldSubmit: func.isRequired,
-    shouldSubmit: bool
+    resetShouldSubmitPayment: func.isRequired,
+    shouldSubmitPayment: bool
 };

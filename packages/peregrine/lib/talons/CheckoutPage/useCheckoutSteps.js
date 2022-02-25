@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 const REVIEW_STEP_KEY = 'REVIEW';
@@ -62,7 +62,7 @@ export default (props) => {
     }, [currentStepKey, getStepIndex]);
 
     const handleNextStep = useCallback((requesterKey) => {
-        if (requesterKey !== currentStepKey) {
+        if (!requesterKey || requesterKey !== currentStepKey) {
             return false;
         }
 
@@ -108,6 +108,18 @@ export default (props) => {
         return requestedStep < currentStep;
     }, [getStepIndex, getCurrentStepIndex]);
 
+    const isOnLastStep = useMemo(() => {
+        const stepIndex = getCurrentStepIndex();
+
+        if (stepIndex === false) {
+            return false;
+        }
+
+        return stepIndex === steps
+            .filter(({ visible }) => visible)
+            .length - 1;
+    }, [getCurrentStepIndex, steps]);
+
     const resetStepLoading = useCallback(() => {
         setCurrentStepKey(null);
         setLoading(true);
@@ -126,10 +138,7 @@ export default (props) => {
         const reviewStepIndex = availableSteps.length;
 
         if (nextStepIndex === reviewStepIndex) {
-            return formatMessage({
-                id: 'checkoutPage.reviewCta',
-                defaultMessage: 'Review Order'
-            });
+            return null;
         }
 
         const stepTitleInfo = availableSteps[nextStepIndex].stepTitle
@@ -160,6 +169,7 @@ export default (props) => {
         resetStepLoading,
         isStepVisited,
         isStepPassed,
+        isOnLastStep,
         getContinueText
     };
 }
