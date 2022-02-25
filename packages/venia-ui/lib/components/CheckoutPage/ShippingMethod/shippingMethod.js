@@ -32,13 +32,18 @@ const ShippingMethod = props => {
         onSuccess,
         pageIsUpdating,
         setPageIsUpdating,
-        continueText
+        continueText,
+        shouldSubmitShippingMethod,
+        resetShouldSubmitShippingMethod,
+        shouldDisplayContinueButton
     } = props;
 
     const talonProps = useShippingMethod({
         onSave,
         onSuccess,
-        setPageIsUpdating
+        setPageIsUpdating,
+        shouldSubmitShippingMethod,
+        resetShouldSubmitShippingMethod
     });
 
     const {
@@ -50,7 +55,8 @@ const ShippingMethod = props => {
         isUpdateMode,
         selectedShippingMethod,
         shippingMethods,
-        showUpdateMode
+        showUpdateMode,
+        getFormApi
     } = talonProps;
 
     const classes = useStyle(defaultClasses, props.classes);
@@ -94,26 +100,32 @@ const ShippingMethod = props => {
                 shipping_method: lowestCostShippingMethodSerializedValue
             };
 
+            const submitButton = shouldDisplayContinueButton ? (
+                <div className={classes.formButtons}>
+                    <Button
+                        data-cy="ShippingMethod-submitButton"
+                        priority="normal"
+                        type="submit"
+                        disabled={pageIsUpdating || isLoading}
+                    >
+                        {continueText}
+                    </Button>
+                </div>
+            ) : null;
+
             bodyContents = (
                 <Form
                     className={classes.form}
                     initialValues={lowestCostShippingMethod}
                     onSubmit={handleSubmit}
+                    getApi={getFormApi}
+                    onSubmitFailure={resetShouldSubmitShippingMethod}
                 >
                     <ShippingRadios
                         disabled={pageIsUpdating || isLoading}
                         shippingMethods={shippingMethods}
                     />
-                    <div className={classes.formButtons}>
-                        <Button
-                            data-cy="ShippingMethod-submitButton"
-                            priority="normal"
-                            type="submit"
-                            disabled={pageIsUpdating || isLoading}
-                        >
-                            {continueText}
-                        </Button>
-                    </div>
+                    {submitButton}
                 </Form>
             );
         }

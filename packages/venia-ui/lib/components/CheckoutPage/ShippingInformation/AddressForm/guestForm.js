@@ -29,7 +29,10 @@ const GuestForm = props => {
         shippingData,
         toggleSignInContent,
         setGuestSignInUsername,
-        continueText
+        continueText,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo,
+        shouldDisplayContinueButton
     } = props;
 
     const talonProps = useGuestForm({
@@ -38,7 +41,9 @@ const GuestForm = props => {
         onSuccess,
         shippingData,
         toggleSignInContent,
-        setGuestSignInUsername
+        setGuestSignInUsername,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo
     });
     const {
         errors,
@@ -49,13 +54,10 @@ const GuestForm = props => {
         isUpdate,
         handleValidateEmail,
         showSignInToast,
-        handleToastAction
+        handleToastAction,
+        formApiRef,
+        getFormApi
     } = talonProps;
-
-    const formApiRef = useRef();
-    const getFormApi = api => {
-        formApiRef.current = api;
-    };
 
     const [, { addToast }] = useToasts();
 
@@ -93,6 +95,15 @@ const GuestForm = props => {
         priority: isUpdate ? 'high' : 'normal',
         type: 'submit'
     };
+
+    const submitButton = shouldDisplayContinueButton ? (
+        <Button
+            {...submitButtonProps}
+            data-cy="GuestForm-submitButton"
+        >
+            {submitButtonText}
+        </Button>
+    ) : null;
 
     useEffect(() => {
         if (showSignInToast) {
@@ -133,6 +144,7 @@ const GuestForm = props => {
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
                 getApi={getFormApi}
+                onSubmitFailure={resetShouldSubmitShippingInfo}
             >
                 <div className={classes.email}>
                     <Field
@@ -282,12 +294,7 @@ const GuestForm = props => {
                 </div>
                 <div className={classes.buttons}>
                     {cancelButton}
-                    <Button
-                        {...submitButtonProps}
-                        data-cy="GuestForm-submitButton"
-                    >
-                        {submitButtonText}
-                    </Button>
+                    {submitButton}
                 </div>
             </Form>
         </Fragment>

@@ -13,7 +13,9 @@ const ShippingInformationStep = (props) => {
         setGuestSignInUsername,
         stepKey,
         cartItems,
-        classes
+        classes,
+        reviewOrderButtonClicked,
+        resetReviewOrderButtonClicked
     } = props;
 
     const {
@@ -21,8 +23,10 @@ const ShippingInformationStep = (props) => {
         handleNextStep,
         isStepVisited,
         isStepPassed,
+        isOnLastStep,
         getContinueText,
-        loading
+        loading,
+        currentStepKey
     } = useCheckoutStepContext();
 
     const {
@@ -30,14 +34,21 @@ const ShippingInformationStep = (props) => {
         handleSuccess,
         shippingInformationRef,
         shouldDisplay,
-        continueText
+        continueText,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo,
+        shouldDisplayContinueButton
     } = useShippingInformationStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
         cartItems,
         getContinueText,
-        loading
+        loading,
+        isOnLastStep,
+        reviewOrderButtonClicked,
+        resetReviewOrderButtonClicked,
+        currentStepKey
     });
 
     useEffect(() => {
@@ -71,6 +82,9 @@ const ShippingInformationStep = (props) => {
             toggleSignInContent={toggleSignInContent}
             setGuestSignInUsername={setGuestSignInUsername}
             continueText={continueText}
+            shouldSubmitShippingInfo={shouldSubmitShippingInfo}
+            resetShouldSubmitShippingInfo={resetShouldSubmitShippingInfo}
+            shouldDisplayContinueButton={shouldDisplayContinueButton}
         />
     ) : null;
 

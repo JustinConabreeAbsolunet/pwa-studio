@@ -13,7 +13,7 @@ export default (props) => {
         resetReviewOrderButtonClicked
     } = props;
 
-    const [shouldSubmitPayment, setShouldSubmitPayment] = useState(reviewOrderButtonClicked);
+    const [shouldSubmitPayment, setShouldSubmitPayment] = useState(false);
 
     const continueText = useMemo(() => {
         if (loading) {
@@ -41,6 +41,8 @@ export default (props) => {
     }, [handleNextStep]);
 
     const resetShouldSubmitPayment = useCallback(() => {
+        setShouldSubmitPayment(false);
+
         if (currentStepKey !== stepKey) {
             return;
         }
@@ -50,8 +52,6 @@ export default (props) => {
 
             return;
         }
-
-        setShouldSubmitPayment(false);
     }, [currentStepKey, resetReviewOrderButtonClicked]);
 
     const resetPaymentStep = useCallback(() => {
@@ -59,7 +59,10 @@ export default (props) => {
     }, [setCurrentStepKey]);
 
     useEffect(() => {
-        console.log('should submit changed', reviewOrderButtonClicked);
+        if (currentStepKey !== stepKey) {
+            return;
+        }
+
         setShouldSubmitPayment(reviewOrderButtonClicked);
     }, [reviewOrderButtonClicked]);
 

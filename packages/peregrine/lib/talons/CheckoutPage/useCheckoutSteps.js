@@ -146,6 +146,14 @@ export default (props) => {
         return formatMessage(stepTitleInfo);
     }, [getStepIndex, steps, formatMessage]);
 
+    const goToLastStep = useCallback(() => {
+        const availableSteps = steps.filter(({ visible }) => visible);
+        console.log(availableSteps);
+        setCurrentStepKey(
+            availableSteps[availableSteps.length - 1].key
+        );
+    }, [setCurrentStepKey, steps]);
+
 
     useEffect(() => {
         const areAllFinished = steps.every(({ finished }) => finished);
@@ -165,6 +173,7 @@ export default (props) => {
         getCurrentStepIndex,
         setStepVisibility,
         setCurrentStepKey,
+        goToLastStep,
         handleNextStep,
         resetStepLoading,
         isStepVisited,

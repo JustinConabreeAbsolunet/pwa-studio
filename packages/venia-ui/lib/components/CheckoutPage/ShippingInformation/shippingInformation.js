@@ -14,10 +14,6 @@ import LinkButton from '../../LinkButton';
 
 const EditModal = React.lazy(() => import('./editModal'));
 
-export const displayCondition = async (cart) => {
-    console.log('display condition shipping info');
-};
-
 const ShippingInformation = props => {
     const {
         classes: propClasses,
@@ -26,7 +22,10 @@ const ShippingInformation = props => {
         toggleActiveContent,
         toggleSignInContent,
         setGuestSignInUsername,
-        continueText
+        continueText,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo,
+        shouldDisplayContinueButton
     } = props;
     const talonProps = useShippingInformation({
         onSave,
@@ -105,6 +104,9 @@ const ShippingInformation = props => {
                     toggleSignInContent={toggleSignInContent}
                     setGuestSignInUsername={setGuestSignInUsername}
                     continueText={continueText}
+                    shouldSubmitShippingInfo={shouldSubmitShippingInfo}
+                    resetShouldSubmitShippingInfo={resetShouldSubmitShippingInfo}
+                    shouldDisplayContinueButton={shouldDisplayContinueButton}
                 />
             </div>
         </Fragment>

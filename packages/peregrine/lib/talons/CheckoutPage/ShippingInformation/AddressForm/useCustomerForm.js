@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import DEFAULT_OPERATIONS from './customerForm.gql';
 import mergeOperations from '@magento/peregrine/lib/util/shallowMerge';
@@ -12,8 +12,15 @@ export const useCustomerForm = props => {
         updateCustomerAddressMutation,
         getCustomerQuery,
         getCustomerAddressesQuery,
-        getDefaultShippingQuery
+        getDefaultShippingQuery,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo
     } = operations;
+
+    const formApiRef = useRef();
+    const getFormApi = api => {
+        formApiRef.current = api;
+    };
 
     const [
         createCustomerAddress,
@@ -135,6 +142,18 @@ export const useCustomerForm = props => {
         [createCustomerAddressError, updateCustomerAddressError]
     );
 
+    useEffect(() => {
+        if (shouldSubmitShippingInfo) {
+            formApiRef.current.submitForm();
+        }
+    }, [shouldSubmitShippingInfo]);
+
+    useEffect(() => {
+        if (shouldSubmitShippingInfo && createCustomerAddressError) {
+            resetShouldSubmitShippingInfo();
+        }
+    }, [createCustomerAddressError, shouldSubmitShippingInfo, resetShouldSubmitShippingInfo])
+
     return {
         errors,
         handleCancel,
@@ -143,6 +162,7 @@ export const useCustomerForm = props => {
         initialValues,
         isLoading: getCustomerLoading,
         isSaving,
-        isUpdate
+        isUpdate,
+        getFormApi
     };
 };

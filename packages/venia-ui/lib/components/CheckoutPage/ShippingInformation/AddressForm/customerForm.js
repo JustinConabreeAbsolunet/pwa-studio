@@ -23,14 +23,20 @@ const CustomerForm = props => {
         classes: propClasses,
         onCancel,
         onSuccess,
-        shippingData
+        shippingData,
+        continueText,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo,
+        shouldDisplayContinueButton
     } = props;
 
     const talonProps = useCustomerForm({
         afterSubmit,
         onCancel,
         onSuccess,
-        shippingData
+        shippingData,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo
     });
     const {
         errors,
@@ -40,7 +46,8 @@ const CustomerForm = props => {
         initialValues,
         isLoading,
         isSaving,
-        isUpdate
+        isUpdate,
+        getFormApi
     } = talonProps;
     const { formatMessage } = useIntl();
     const classes = useStyle(defaultClasses, propClasses);
@@ -98,10 +105,7 @@ const CustomerForm = props => {
     ) : null;
 
     const submitButtonText = !hasDefaultShipping
-        ? formatMessage({
-              id: 'global.saveAndContinueButton',
-              defaultMessage: 'Save and Continue'
-          })
+        ? continueText
         : isUpdate
         ? formatMessage({
               id: 'global.updateButton',
@@ -116,6 +120,15 @@ const CustomerForm = props => {
         priority: !hasDefaultShipping ? 'normal' : 'high',
         type: 'submit'
     };
+
+    const submitButton = shouldDisplayContinueButton ? (
+        <Button
+            {...submitButtonProps}
+            data-cy="CustomerForm-submitButton"
+        >
+            {submitButtonText}
+        </Button>
+    ) : null;
 
     const defaultShippingElement = hasDefaultShipping ? (
         <div className={classes.defaultShipping}>
@@ -142,6 +155,8 @@ const CustomerForm = props => {
                 data-cy="CustomerForm-root"
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
+                getApi={getFormApi}
+                onSubmitFailure={resetShouldSubmitShippingInfo}
             >
                 {formMessageRow}
                 {emailRow}
@@ -267,12 +282,7 @@ const CustomerForm = props => {
                 {defaultShippingElement}
                 <div className={classes.buttons}>
                     {cancelButton}
-                    <Button
-                        {...submitButtonProps}
-                        data-cy="CustomerForm-submitButton"
-                    >
-                        {submitButtonText}
-                    </Button>
+                    {submitButton}
                 </div>
             </Form>
         </Fragment>

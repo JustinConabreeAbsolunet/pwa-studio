@@ -12,7 +12,9 @@ const ShippingMethodStep = (props) => {
         setIsUpdating,
         stepKey,
         cartItems,
-        classes
+        classes,
+        reviewOrderButtonClicked,
+        resetReviewOrderButtonClicked
     } = props;
 
     const {
@@ -20,8 +22,10 @@ const ShippingMethodStep = (props) => {
         handleNextStep,
         isStepVisited,
         isStepPassed,
+        isOnLastStep,
         getContinueText,
-        loading
+        loading,
+        currentStepKey
     } = useCheckoutStepContext();
 
     const {
@@ -29,15 +33,24 @@ const ShippingMethodStep = (props) => {
         handleSuccess,
         shippingMethodRef,
         shouldDisplay,
-        continueText
+        continueText,
+        shouldSubmitShippingMethod,
+        resetShouldSubmitShippingMethod,
+        shouldDisplayContinueButton
     } = useShippingMethodStep({
         stepKey,
         setStepVisibility,
         handleNextStep,
         cartItems,
         getContinueText,
-        loading
+        loading,
+        isOnLastStep,
+        reviewOrderButtonClicked,
+        resetReviewOrderButtonClicked,
+        currentStepKey
     });
+
+    console.log('display method button', shouldDisplayContinueButton);
 
     useEffect(() => {
         setStepVisibility(stepKey, shouldDisplay);
@@ -68,6 +81,9 @@ const ShippingMethodStep = (props) => {
             onSuccess={handleSuccess}
             setPageIsUpdating={setIsUpdating}
             continueText={continueText}
+            shouldSubmitShippingMethod={shouldSubmitShippingMethod}
+            resetShouldSubmitShippingMethod={resetShouldSubmitShippingMethod}
+            shouldDisplayContinueButton={shouldDisplayContinueButton}
         />
     ) : null;
 

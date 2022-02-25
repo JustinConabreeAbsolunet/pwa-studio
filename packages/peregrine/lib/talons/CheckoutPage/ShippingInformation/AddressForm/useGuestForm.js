@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import DEFAULT_OPERATIONS from './guestForm.gql';
 import mergeOperations from '@magento/peregrine/lib/util/shallowMerge';
@@ -12,12 +12,19 @@ export const useGuestForm = props => {
         onSuccess,
         shippingData,
         toggleSignInContent,
-        setGuestSignInUsername
+        setGuestSignInUsername,
+        shouldSubmitShippingInfo,
+        resetShouldSubmitShippingInfo
     } = props;
     const [showSignInToast, setShowSignInToast] = useState(false);
 
     const operations = mergeOperations(DEFAULT_OPERATIONS, props.operations);
     const { setGuestShippingMutation, getEmailAvailableQuery } = operations;
+
+    const formApiRef = useRef();
+    const getFormApi = api => {
+        formApiRef.current = api;
+    };
 
     const [{ cartId }] = useCartContext();
 
@@ -108,6 +115,20 @@ export const useGuestForm = props => {
         }
     }, [data]);
 
+    useEffect(() => {
+        console.log('in use effect', shouldSubmitShippingInfo);
+        if (shouldSubmitShippingInfo) {
+            console.log('submitting form');
+            formApiRef.current.submitForm();
+        }
+    }, [shouldSubmitShippingInfo]);
+
+    useEffect(() => {
+        if (shouldSubmitShippingInfo && error) {
+            resetShouldSubmitShippingInfo();
+        }
+    }, [error, shouldSubmitShippingInfo, resetShouldSubmitShippingInfo]);
+
     return {
         errors,
         handleCancel,
@@ -117,6 +138,8 @@ export const useGuestForm = props => {
         initialValues,
         isSaving: loading,
         isUpdate,
-        showSignInToast
+        showSignInToast,
+        formApiRef,
+        getFormApi
     };
 };

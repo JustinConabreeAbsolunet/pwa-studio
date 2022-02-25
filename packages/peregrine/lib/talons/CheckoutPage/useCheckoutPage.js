@@ -67,7 +67,7 @@ export const useCheckoutPage = (props = {}) => {
     const operations = mergeOperations(DEFAULT_OPERATIONS, props.operations);
     const { stepsContext } = props;
     const {
-        setCheckoutStepKey,
+        goToLastStep,
         currentStepKey,
         resetStepLoading,
         getCurrentStepIndex,
@@ -222,7 +222,7 @@ export const useCheckoutPage = (props = {}) => {
                     err
                 );
                 setReviewOrderButtonClicked(false);
-                setCheckoutStepKey('PAYMENT');
+                goToLastStep();
             }
         }
 
@@ -250,10 +250,6 @@ export const useCheckoutPage = (props = {}) => {
     const isBeforeReview = useMemo(() => {
         return getCurrentStepIndex() < getStepIndex('REVIEW');
     }, [getStepIndex, getCurrentStepIndex]);
-
-    const isPaymentStep = useMemo(() => {
-        return currentStepKey === 'PAYMENT';
-    }, [currentStepKey]);
 
     const isReviewStep = useMemo(() => {
         return currentStepKey === 'REVIEW';
@@ -289,7 +285,6 @@ export const useCheckoutPage = (props = {}) => {
         toggleSignInContent,
         isBeforeReview,
         isReviewStep,
-        isPaymentStep,
         isOnLastStep
     };
 };

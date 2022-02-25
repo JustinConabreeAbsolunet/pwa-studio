@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import DEFAULT_OPERATIONS from './shippingMethod.gql';
 import mergeOperations from '@magento/peregrine/lib/util/shallowMerge';
@@ -42,7 +42,19 @@ const DEFAULT_SELECTED_SHIPPING_METHOD = null;
 const DEFAULT_AVAILABLE_SHIPPING_METHODS = [];
 
 export const useShippingMethod = props => {
-    const { onSave, onSuccess, setPageIsUpdating } = props;
+    const {
+        onSave,
+        onSuccess,
+        setPageIsUpdating,
+        shouldSubmitShippingMethod,
+        resetShouldSubmitShippingMethod
+    } = props;
+
+    const formApiRef = useRef();
+    const getFormApi = api => {
+        console.log('setting form api', api);
+        formApiRef.current = api;
+    };
 
     const operations = mergeOperations(DEFAULT_OPERATIONS, props.operations);
 
@@ -219,6 +231,18 @@ export const useShippingMethod = props => {
         [setShippingMethodError]
     );
 
+    useEffect(() => {
+        if (shouldSubmitShippingMethod) {
+            formApiRef.current.submitForm();
+        }
+    }, [shouldSubmitShippingMethod]);
+
+    useEffect(() => {
+        if (shouldSubmitShippingMethod && setShippingMethodError) {
+            resetShouldSubmitShippingMethod();
+        }
+    }, [setShippingMethodError, shouldSubmitShippingMethod, resetShouldSubmitShippingMethod])
+
     return {
         displayState,
         errors,
@@ -228,6 +252,7 @@ export const useShippingMethod = props => {
         isUpdateMode,
         selectedShippingMethod: derivedSelectedShippingMethod,
         shippingMethods: derivedShippingMethods,
-        showUpdateMode
+        showUpdateMode,
+        getFormApi
     };
 };
