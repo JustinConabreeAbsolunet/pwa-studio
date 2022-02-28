@@ -18,6 +18,7 @@ const ShippingMethodStep = (props) => {
     } = props;
 
     const {
+        steps,
         setStepVisibility,
         handleNextStep,
         isStepVisited,
@@ -38,6 +39,7 @@ const ShippingMethodStep = (props) => {
         resetShouldSubmitShippingMethod,
         shouldDisplayContinueButton
     } = useShippingMethodStep({
+        steps,
         stepKey,
         setStepVisibility,
         handleNextStep,
@@ -50,10 +52,10 @@ const ShippingMethodStep = (props) => {
         currentStepKey
     });
 
-    console.log('display method button', shouldDisplayContinueButton);
-
     useEffect(() => {
-        setStepVisibility(stepKey, shouldDisplay);
+        if (shouldDisplay !== null) {
+            setStepVisibility(stepKey, shouldDisplay);
+        }
     }, [shouldDisplay]);
 
     if (loading) {

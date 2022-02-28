@@ -244,6 +244,13 @@ export const usePaymentInformation = props => {
         }
     }, [checkoutError, handleExpiredPaymentError]);
 
+    useEffect(() => {
+        if (doneEditing) {
+            onSave();
+            resetShouldSubmitPayment();
+        }
+    }, [shouldSubmitPayment]);
+
     return {
         doneEditing,
         handlePaymentError,

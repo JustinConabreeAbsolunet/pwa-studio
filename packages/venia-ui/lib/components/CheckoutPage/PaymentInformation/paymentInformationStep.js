@@ -17,6 +17,7 @@ const PaymentInformationStep = (props) => {
     const stepContext = useCheckoutStepContext();
 
     const {
+        steps,
         currentStepKey,
         setStepVisibility,
         handleNextStep,
@@ -37,6 +38,7 @@ const PaymentInformationStep = (props) => {
         handleContinueClick,
         shouldDisplayContinueButton
     } = usePaymentInformationStep({
+        steps,
         stepKey,
         setStepVisibility,
         handleNextStep,
@@ -50,7 +52,9 @@ const PaymentInformationStep = (props) => {
     });
 
     useEffect(() => {
-        setStepVisibility(stepKey, shouldDisplay);
+        if (shouldDisplay !== null) {
+            setStepVisibility(stepKey, shouldDisplay);
+        }
     }, [shouldDisplay]);
 
     if (loading) {

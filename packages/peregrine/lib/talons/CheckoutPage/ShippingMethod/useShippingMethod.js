@@ -52,7 +52,6 @@ export const useShippingMethod = props => {
 
     const formApiRef = useRef();
     const getFormApi = api => {
-        console.log('setting form api', api);
         formApiRef.current = api;
     };
 

@@ -19,6 +19,7 @@ const ShippingInformationStep = (props) => {
     } = props;
 
     const {
+        steps,
         setStepVisibility,
         handleNextStep,
         isStepVisited,
@@ -48,11 +49,14 @@ const ShippingInformationStep = (props) => {
         isOnLastStep,
         reviewOrderButtonClicked,
         resetReviewOrderButtonClicked,
-        currentStepKey
+        currentStepKey,
+        steps
     });
 
     useEffect(() => {
-        setStepVisibility(stepKey, shouldDisplay);
+        if (shouldDisplay !== null) {
+            setStepVisibility(stepKey, shouldDisplay);
+        }
     }, [shouldDisplay]);
 
     if (loading) {

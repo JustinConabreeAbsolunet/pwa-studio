@@ -96,7 +96,7 @@ const GuestForm = props => {
         type: 'submit'
     };
 
-    const submitButton = shouldDisplayContinueButton ? (
+    const submitButton = shouldDisplayContinueButton || isUpdate ? (
         <Button
             {...submitButtonProps}
             data-cy="GuestForm-submitButton"

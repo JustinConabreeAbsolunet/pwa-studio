@@ -121,7 +121,7 @@ const CustomerForm = props => {
         type: 'submit'
     };
 
-    const submitButton = shouldDisplayContinueButton ? (
+    const submitButton = shouldDisplayContinueButton || isUpdate ? (
         <Button
             {...submitButtonProps}
             data-cy="CustomerForm-submitButton"

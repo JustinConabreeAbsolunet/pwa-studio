@@ -69,7 +69,7 @@ export const useCheckoutPage = (props = {}) => {
     const {
         goToLastStep,
         currentStepKey,
-        resetStepLoading,
+        resetAllSteps,
         getCurrentStepIndex,
         getStepIndex,
         isOnLastStep
@@ -243,7 +243,7 @@ export const useCheckoutPage = (props = {}) => {
 
     useEffect(() => {
         return () => {
-            resetStepLoading();
+            resetAllSteps();
         };
     }, []);
 

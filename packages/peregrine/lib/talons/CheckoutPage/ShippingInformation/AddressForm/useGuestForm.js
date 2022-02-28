@@ -116,9 +116,7 @@ export const useGuestForm = props => {
     }, [data]);
 
     useEffect(() => {
-        console.log('in use effect', shouldSubmitShippingInfo);
         if (shouldSubmitShippingInfo) {
-            console.log('submitting form');
             formApiRef.current.submitForm();
         }
     }, [shouldSubmitShippingInfo]);

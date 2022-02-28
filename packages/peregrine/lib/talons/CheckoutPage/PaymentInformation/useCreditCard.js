@@ -165,7 +165,7 @@ export const useCreditCard = props => {
         }
     ] = useMutation(setCreditCardDetailsOnCartMutation);
 
-    const shippingAddressCountry = shippingAddressData
+    const shippingAddressCountry = shippingAddressData?.cart?.shippingAddresses.length > 0
         ? shippingAddressData.cart.shippingAddresses[0].country.code
         : DEFAULT_COUNTRY_CODE;
     const isBillingAddressSame = formState.values.isBillingAddressSame;
