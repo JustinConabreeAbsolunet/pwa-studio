@@ -28,7 +28,6 @@ export default (props) => {
         resetReviewOrderButtonClicked
     } = props;
 
-    const shouldDisplayStep = useRef(null);
     const [shouldSubmitPayment, setShouldSubmitPayment] = useState(false);
 
     const continueText = useMemo(() => {
@@ -74,12 +73,12 @@ export default (props) => {
         setCurrentStepKey('PAYMENT');
     }, [setCurrentStepKey]);
 
-    useEffect(() => {
+    const shouldDisplay = useMemo(() => {
         const step = steps.find(({ key }) => key === stepKey);
 
         const isHidden = step.finished && !step.visible;
 
-        shouldDisplayStep.current = !isHidden;
+        return !isHidden;
     }, [steps]);
 
     useEffect(() => {
@@ -98,7 +97,7 @@ export default (props) => {
         resetShouldSubmitPayment,
         handleContinueClick,
         shouldDisplayContinueButton,
-        shouldDisplay: shouldDisplayStep.current
+        shouldDisplay
     };
 }
 

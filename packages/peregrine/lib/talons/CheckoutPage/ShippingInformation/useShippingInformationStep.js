@@ -30,7 +30,6 @@ export default (props) => {
         currentStepKey
     } = props;
 
-    const shouldDisplayStep = useRef(null);
     const shippingInformationRef = useRef();
     const [shouldSubmitShippingInfo, setShouldSubmitShippingInfo] = useState(false);
 
@@ -72,7 +71,7 @@ export default (props) => {
         }
     }, [currentStepKey, resetReviewOrderButtonClicked]);
 
-    useEffect(() => {
+    const shouldDisplay = useMemo(() => {
         const onlyVirtualProducts = cartItems.every((cartItem) => {
             return VIRTUAL_TYPES.includes(cartItem.__typename);
         });
@@ -81,7 +80,7 @@ export default (props) => {
 
         const isHidden = step.finished && !step.visible;
 
-        shouldDisplayStep.current = !onlyVirtualProducts && !isHidden;
+        return !onlyVirtualProducts && !isHidden;
     }, [cartItems, steps]);
 
     useEffect(() => {
@@ -100,7 +99,7 @@ export default (props) => {
         shouldSubmitShippingInfo,
         resetShouldSubmitShippingInfo,
         shouldDisplayContinueButton,
-        shouldDisplay: shouldDisplayStep.current
+        shouldDisplay
     };
 }
 
